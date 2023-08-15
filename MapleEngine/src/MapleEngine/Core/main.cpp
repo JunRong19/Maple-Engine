@@ -22,15 +22,16 @@ int main() {
 		MPL::Input.Process_Input();
 		// Process engine's events.
 		MPL::Event.Poll();
-		// Update engine.
-		MPL::Core.Update();
 		// Tick engine's time.
 		MPL::Time.Tick();
-		// Update engine's graphics.
-		MPL::Graphics.Update();
-
+		// Update engine.
+		MPL::Core.Update();
+		// Update app.
 		GLApp::Update();
+		// Draw app.
 		GLApp::Draw();
+		// Draw engine's UI.
+		MPL::Graphics.Draw();
 
 		// Swap buffers: front <-> back
 		glfwSwapBuffers(MPL::Core.Window());
@@ -63,10 +64,14 @@ void Clean_Up() {
 	// Unsubscribe all keys.
 	MPL::Input.Free();
 
+	// Shutdown ImGui.
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
 	GLApp::Clean_Up();
 
 	GLHelper::Clean_Up();
 
-	// Delete window.
-	glfwDestroyWindow(MPL::Core.Window());
+
 }

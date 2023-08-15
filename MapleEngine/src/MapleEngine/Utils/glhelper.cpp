@@ -67,6 +67,8 @@ bool GLHelper::Init(GLint w, GLint h, std::string t) {
 
 
 void GLHelper::Clean_Up() {
+	// Delete window.
+	glfwDestroyWindow(GLHelper::ptr_window);
 	glfwTerminate();
 }
 

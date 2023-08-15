@@ -12,7 +12,7 @@ namespace MPL {
 		}
 
 		void Initialize();
-		void Update();
+		void Draw();
 
 	private:
 		MPL_Graphics();
