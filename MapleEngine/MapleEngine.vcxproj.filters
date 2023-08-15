@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Resource Files\Shaders">
+      <UniqueIdentifier>{7da0f235-9356-40a3-a933-c84068d328ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{bcbf06f1-c52d-4609-b138-debb254f498e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\_Core">
+      <UniqueIdentifier>{62b13d6d-4e1c-4a6b-b5d0-bd5ae9defa6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Game">
+      <UniqueIdentifier>{471afe18-a971-4600-b795-1fdb03438ffa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\_Graphics">
+      <UniqueIdentifier>{2d8f3718-2ae6-4128-8f5a-ef3466f3aad7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Include">
+      <UniqueIdentifier>{8dbbfd6d-5f79-4850-a525-99b41d4b1da5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\_Utils">
+      <UniqueIdentifier>{3e76eb7f-3d53-44d2-8e72-459bb5810a14}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\default.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="res\shaders\default.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\MapleEngine\Core\MPL_Engine.cpp">
+      <Filter>Engine\_Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MapleEngine\Core\MPL_Events.cpp">
+      <Filter>Engine\_Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MapleEngine\Core\MPL_Input.cpp">
+      <Filter>Engine\_Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MapleEngine\Core\MPL_Timer.cpp">
+      <Filter>Engine\_Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MapleEngine\Core\glapp.cpp">
+      <Filter>Engine\_Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MapleEngine\Graphics\EBO.cpp">
+      <Filter>Engine\_Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MapleEngine\Graphics\VAO.cpp">
+      <Filter>Engine\_Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MapleEngine\Graphics\VBO.cpp">
+      <Filter>Engine\_Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MapleEngine\Utils\glhelper.cpp">
+      <Filter>Engine\_Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MapleEngine\Utils\glslshader.cpp">
+      <Filter>Engine\_Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MapleEngine\Utils\pch.cpp">
+      <Filter>Engine\_Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MapleEngine\Core\MPL_Graphics.cpp">
+      <Filter>Engine\_Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MapleEngine\Core\main.cpp">
+      <Filter>Engine\_Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\MPL.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MPL_Engine.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MPL_Events.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MPL_Input.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MPL_Timer.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EBO.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\glapp.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\glhelper.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\glslshader.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\VAO.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\VBO.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Event.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pch.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MPL_Graphics.h">
+      <Filter>Engine\Include</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
