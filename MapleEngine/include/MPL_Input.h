@@ -41,13 +41,13 @@ namespace MPL {
 		}
 
 		void Initialize();
-		void ProcessInput();
+		void Process_Input();
 		void Free();
 
-		void SubscribeToKey(int key, KEY_STATE type, void (*func)());
-		void UnsubscribeKey(int key, KEY_STATE type, void (*func)());
+		void Subscribe_To_Key(int key, KEY_STATE type, void (*func)());
+		void Unsubscribe_Key(int key, KEY_STATE type, void (*func)());
 
-		inline void SetMousePos(double x, double y) { mousePos.x = x; mousePos.y = y; }
+		inline void Set_Mouse_Pos(double x, double y) { mousePos.x = x; mousePos.y = y; }
 
 	public:
 		Event<double> onMouseScroll;

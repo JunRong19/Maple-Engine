@@ -17,7 +17,7 @@ public:
 	\brief
 		Link VBO to this VAO to read and store its configuration.
 	*************************************************************************/
-	void LinkAttrib(VBO VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset);
+	void Link_Attrib(VBO VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset);
 
 	/*!***********************************************************************
 	\brief

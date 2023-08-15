@@ -4,29 +4,22 @@ struct GLHelper
 	/*! GLHelper structure to encapsulate initialization stuff ...
 	*/
 {
-	static bool init(GLint w, GLint h, std::string t);
-	static void cleanup();
+	static bool Init(GLint w, GLint h, std::string t);
+	static void Clean_Up();
 
 	// Callbacks
-	static void error_cb(int error, char const* description);
-	static void fbsize_cb(GLFWwindow* ptr_win, int width, int height);
+	static void Error_Cb(int error, char const* description);
+	static void Fbsize_Cb(GLFWwindow* ptr_win, int width, int height);
 	// I/O callbacks
-	static void key_cb(GLFWwindow* pwin, int key, int scancode, int action, int mod);
-	static void mousebutton_cb(GLFWwindow* pwin, int button, int action, int mod);
-	static void mousescroll_cb(GLFWwindow* pwin, double xoffset, double yoffset);
-	static void mousepos_cb(GLFWwindow* pwin, double xpos, double ypos);
-	static void print_specs();
-
-	static void update_time(double fpsCalcInt = 1.0);
+	static void Key_Cb(GLFWwindow* pwin, int key, int scancode, int action, int mod);
+	static void Mousebutton_Cb(GLFWwindow* pwin, int button, int action, int mod);
+	static void Mousescroll_Cb(GLFWwindow* pwin, double xoffset, double yoffset);
+	static void Mousepos_Cb(GLFWwindow* pwin, double xpos, double ypos);
+	static void Print_Specs();
 
 	static GLint width, height;
-	static GLdouble fps;
-	static GLdouble delta_time;
 	static std::string title;
 	static GLFWwindow* ptr_window;
-	static GLboolean keystate_T;
-	static GLboolean keystate_M;
-	static GLboolean keystate_A;
 };
 
 #endif /* GLHELPER_H */

@@ -5,7 +5,7 @@ VAO::VAO() {
 	glGenVertexArrays(1, &ID);
 }
 
-void VAO::LinkAttrib(VBO VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset) {
+void VAO::Link_Attrib(VBO VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset) {
 	VBO.Bind();
 	// Specify the format and VBO (current active) to be used in VAO.
 	// Calling this func will allow VAO to read and store the configuration.

@@ -26,6 +26,12 @@
     <Filter Include="Engine\_Utils">
       <UniqueIdentifier>{3e76eb7f-3d53-44d2-8e72-459bb5810a14}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Include\Core">
+      <UniqueIdentifier>{8a76eb1c-c626-4a4c-aedd-a31188edefa5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\ImGui">
+      <UniqueIdentifier>{dc0bf265-dd50-4280-a1d2-95b385ebc4a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\default.frag">
@@ -75,21 +81,30 @@
     <ClCompile Include="src\MapleEngine\Core\main.cpp">
       <Filter>Engine\_Core</Filter>
     </ClCompile>
+    <ClCompile Include="lib\imgui\imgui.cpp">
+      <Filter>Engine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_demo.cpp">
+      <Filter>Engine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_draw.cpp">
+      <Filter>Engine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_impl_glfw.cpp">
+      <Filter>Engine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_impl_opengl3.cpp">
+      <Filter>Engine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_tables.cpp">
+      <Filter>Engine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_widgets.cpp">
+      <Filter>Engine\ImGui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MPL.h">
-      <Filter>Engine\Include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MPL_Engine.h">
-      <Filter>Engine\Include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MPL_Events.h">
-      <Filter>Engine\Include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MPL_Input.h">
-      <Filter>Engine\Include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MPL_Timer.h">
       <Filter>Engine\Include</Filter>
     </ClInclude>
     <ClInclude Include="include\EBO.h">
@@ -116,8 +131,47 @@
     <ClInclude Include="include\pch.h">
       <Filter>Engine\Include</Filter>
     </ClInclude>
+    <ClInclude Include="include\MPL_Engine.h">
+      <Filter>Engine\Include\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MPL_Events.h">
+      <Filter>Engine\Include\Core</Filter>
+    </ClInclude>
     <ClInclude Include="include\MPL_Graphics.h">
-      <Filter>Engine\Include</Filter>
+      <Filter>Engine\Include\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MPL_Input.h">
+      <Filter>Engine\Include\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MPL_Timer.h">
+      <Filter>Engine\Include\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imconfig.h">
+      <Filter>Engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imgui.h">
+      <Filter>Engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imgui_impl_glfw.h">
+      <Filter>Engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imgui_impl_opengl3.h">
+      <Filter>Engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imgui_impl_opengl3_loader.h">
+      <Filter>Engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imgui_internal.h">
+      <Filter>Engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imstb_rectpack.h">
+      <Filter>Engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imstb_textedit.h">
+      <Filter>Engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imstb_truetype.h">
+      <Filter>Engine\ImGui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

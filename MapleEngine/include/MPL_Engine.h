@@ -26,6 +26,9 @@ namespace MPL {
 	private:
 		GLFWwindow* window;
 		bool run;
+
+	private:
+		void WindowTitle();
 	};
 
 	static MPL_Engine& Core = MPL_Engine::Ref();

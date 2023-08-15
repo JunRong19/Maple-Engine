@@ -13,16 +13,20 @@ namespace MPL {
 		}
 
 		void Initialize();
-		void Tick();
+		void Tick(double fps_calc_interval = 1.0);
 
-		inline float DeltaTime() { return dt; }
-		inline float FrameCount() { return frameCount; }
+
+		inline double Fps() { return fps; }
+		inline double DeltaTime() { return delta_time; }
+		inline int FrameCount() { return frame_count; }
 
 	private:
 		MPL_Timer();
 
 	private:
-		float dt, lastFrame, frameCount;
+		double fps, delta_time;
+		// Number of frame since engine starts.
+		int frame_count;
 	};
 
 	static MPL_Timer& Time = MPL_Timer::Ref();

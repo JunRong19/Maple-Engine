@@ -5,12 +5,12 @@
 
 namespace MPL {
 
-	void keyCallback(GLFWwindow* window, int key, int action);
-	void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-	void mouseBtnCallback(GLFWwindow* window, int buttton, int action, int mods);
+	void Key_Callback(GLFWwindow* window, int key, int action);
+	void Keyboard_Callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	void Mouse_Btn_Callback(GLFWwindow* window, int buttton, int action, int mods);
 
-	void mousePosCallback(GLFWwindow* window, double xPos, double yPos);
-	void mouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
+	void Mouse_Pos_Callback(GLFWwindow* window, double xPos, double yPos);
+	void Mouse_Scroll_Callback(GLFWwindow* window, double xOffset, double yOffset);
 
 	const float DOUBLE_CLICK_TIME = 0.2f;	// Amount of seconds between clicks triggered to be counted as double clicking.
 
@@ -26,29 +26,29 @@ namespace MPL {
 	}
 
 	void MPL_Input::Initialize() {
-		glfwSetKeyCallback(Core.Window(), keyboardCallback);
-		glfwSetMouseButtonCallback(Core.Window(), mouseBtnCallback);
+		glfwSetKeyCallback(Core.Window(), Keyboard_Callback);
+		glfwSetMouseButtonCallback(Core.Window(), Mouse_Btn_Callback);
 
 
-		glfwSetCursorPosCallback(Core.Window(), mousePosCallback);
-		glfwSetScrollCallback(Core.Window(), mouseScrollCallback);
+		glfwSetCursorPosCallback(Core.Window(), Mouse_Pos_Callback);
+		glfwSetScrollCallback(Core.Window(), Mouse_Scroll_Callback);
 	}
 
-	void MPL_Input::ProcessInput() {
+	void MPL_Input::Process_Input() {
 		if (glfwGetKey(Core.Window(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(Core.Window(), true);
 
 	}
 
-	void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-		keyCallback(window, key, action);
+	void Keyboard_Callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+		Key_Callback(window, key, action);
 	}
 
-	void mouseBtnCallback(GLFWwindow* window, int buttton, int action, int mods) {
-		keyCallback(window, buttton, action);
+	void Mouse_Btn_Callback(GLFWwindow* window, int buttton, int action, int mods) {
+		Key_Callback(window, buttton, action);
 	}
 
-	void keyCallback(GLFWwindow* window, int key, int action) {
+	void Key_Callback(GLFWwindow* window, int key, int action) {
 		for (auto& k : keys) {
 			if (key == k.key) {
 				if (glfwGetKey(window, key) == GLFW_PRESS || glfwGetMouseButton(window, key) == GLFW_PRESS) {
@@ -94,7 +94,7 @@ namespace MPL {
 	\param func
 		Callback function when key event is invoke.
 	*************************************************************************/
-	void MPL_Input::SubscribeToKey(int key, KEY_STATE type, void (*func)()) {
+	void MPL_Input::Subscribe_To_Key(int key, KEY_STATE type, void (*func)()) {
 		for (auto& k : keys) {
 			// Subscribe to key event if key is found.
 			if (k.key == key) {
@@ -155,7 +155,7 @@ namespace MPL {
 	\param func
 		Function to unsubscribe.
 	*************************************************************************/
-	void MPL_Input::UnsubscribeKey(int key, KEY_STATE type, void (*func)()) {
+	void MPL_Input::Unsubscribe_Key(int key, KEY_STATE type, void (*func)()) {
 		for (auto& k : keys) {
 			if (k.key == key) {
 				switch (type) {
@@ -179,21 +179,21 @@ namespace MPL {
 		}
 	}
 
-	void mousePosCallback(GLFWwindow* window, double xPos, double yPos) {
-		Input.SetMousePos(xPos, yPos);
+	void Mouse_Pos_Callback(GLFWwindow* window, double xPos, double yPos) {
+		Input.Set_Mouse_Pos(xPos, yPos);
 	}
 
-	void mouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset) {
+	void Mouse_Scroll_Callback(GLFWwindow* window, double xOffset, double yOffset) {
 		Input.onMouseScroll.Invoke(yOffset);
 	}
 
 	void MPL_Input::Free() {
 		// Free all key events.
 		for (auto& k : keys) {
-			k.events.onKeyTriggered.UnsubscribeAll();
-			k.events.onKeyPressed.UnsubscribeAll();
-			k.events.onKeyReleased.UnsubscribeAll();
-			k.events.onKeyDoubleClick.UnsubscribeAll();
+			k.events.onKeyTriggered.Unsubscribe_All();
+			k.events.onKeyPressed.Unsubscribe_All();
+			k.events.onKeyReleased.Unsubscribe_All();
+			k.events.onKeyDoubleClick.Unsubscribe_All();
 		}
 	}
 }

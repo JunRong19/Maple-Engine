@@ -1,7 +1,7 @@
 #include <pch.h>
-#include <MPL_Engine.h>
-#include <MPL_Input.h>
+#include <MPL.h>
 #include <glhelper.h>
+#include <iomanip>
 
 namespace MPL {
 	MPL_Engine::MPL_Engine() : run(true), window(NULL) {}
@@ -12,12 +12,12 @@ namespace MPL {
 
 	void MPL_Engine::Initialize() {
 		// Initialize opengl backend.
-		if (!GLHelper::init(1920, 1080, "MapleEngine")) {
+		if (!GLHelper::Init(1920, 1080, "MapleEngine")) {
 			std::cout << "Unable to create OpenGL context" << std::endl;
 			std::exit(EXIT_FAILURE);
 		}
 
-		GLHelper::print_specs();
+		GLHelper::Print_Specs();
 
 		// Get window.
 		window = GLHelper::ptr_window;
@@ -26,10 +26,17 @@ namespace MPL {
 	}
 
 	void MPL_Engine::Update() {
-		return;
+		WindowTitle();
 	}
 
 	void MPL_Engine::Quit() {
 		run = false;
+	}
+
+	void MPL_Engine::WindowTitle() {
+		// Update title of window.
+		std::stringstream title;
+		title << "MapleEngine | FPS: " << std::fixed << std::setprecision(2) << MPL::Time.Fps();
+		glfwSetWindowTitle(GLHelper::ptr_window, title.str().c_str());
 	}
 }

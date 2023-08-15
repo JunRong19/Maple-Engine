@@ -9,14 +9,17 @@
 #include<EBO.h>
 
 static void Initialize_Engine();
-static void Cleanup();
+static void Initialize_ImGui();
+static void Clean_Up();
 
 int main() {
 	Initialize_Engine();
 
+	GLApp::Init();
+
 	while (MPL::Core.Run()) {
 		// Process engine's input.
-		MPL::Input.ProcessInput();
+		MPL::Input.Process_Input();
 		// Process engine's events.
 		MPL::Event.Poll();
 		// Update engine.
@@ -26,14 +29,14 @@ int main() {
 		// Update engine's graphics.
 		MPL::Graphics.Update();
 
-		GLApp::update();
-		GLApp::draw();
+		GLApp::Update();
+		GLApp::Draw();
 
 		// Swap buffers: front <-> back
 		glfwSwapBuffers(MPL::Core.Window());
 	}
 
-	Cleanup();
+	Clean_Up();
 
 	// Terminate program.
 	return EXIT_SUCCESS;
@@ -44,17 +47,25 @@ static void Initialize_Engine() {
 	MPL::Input.Initialize();
 	MPL::Time.Initialize();
 	MPL::Event.Initialize();
-
-	GLApp::init();
+	Initialize_ImGui();
 }
 
-void Cleanup() {
+static void Initialize_ImGui() {
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGui::StyleColorsDark();
+	ImGui_ImplGlfw_InitForOpenGL(MPL::Core.Window(), true);
+	ImGui_ImplOpenGL3_Init("#version 450");
+}
+
+void Clean_Up() {
 	// Unsubscribe all keys.
 	MPL::Input.Free();
 
-	GLApp::cleanup();
+	GLApp::Clean_Up();
 
-	GLHelper::cleanup();
+	GLHelper::Clean_Up();
 
 	// Delete window.
 	glfwDestroyWindow(MPL::Core.Window());

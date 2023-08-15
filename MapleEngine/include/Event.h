@@ -102,7 +102,7 @@ public:
 	}
 
 	// Remove all functions from this event list
-	void UnsubscribeAll() {
+	void Unsubscribe_All() {
 		subscribers.clear();
 	}
 };
@@ -166,7 +166,7 @@ public:
 	}
 
 	// Remove all functions from this event list
-	void UnsubscribeAll() {
+	void Unsubscribe_All() {
 		subscribers.clear();
 	}
 };

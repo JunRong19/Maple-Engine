@@ -1,6 +1,7 @@
 #include <pch.h>
 #include <glapp.h>
 #include <glhelper.h>
+#include <MPL.h>
 typedef enum COLOR {
 	R, G, B
 };
@@ -12,7 +13,7 @@ COLOR currentColor = R;
 
 GLApp::GLModel GLApp::mdl;
 
-void GLApp::GLModel::setup_vao() {
+void GLApp::GLModel::Setup_Vao() {
 	// Define vertex position and color attributes
 	std::array<glm::vec2, 4> pos_vert{
 		glm::vec2(0.5f, -0.5f), glm::vec2(0.5f, 0.5f),
@@ -81,7 +82,7 @@ void GLApp::GLModel::setup_vao() {
 	glBindVertexArray(0);
 }
 
-void GLApp::GLModel::setup_shdrpgm() {
+void GLApp::GLModel::Setup_Shdrpgm() {
 	std::vector<std::pair<GLenum, std::string>> shdr_files;
 	// Load vert and frag shaders.
 	shdr_files.emplace_back(std::make_pair(
@@ -99,7 +100,7 @@ void GLApp::GLModel::setup_shdrpgm() {
 	}
 }
 
-void GLApp::GLModel::draw() {
+void GLApp::GLModel::Draw() {
 	// there are many shader programs initialized - here we're saying
 	// which specific shader program should be used to render geometry
 	shdr_pgm.Use();
@@ -118,7 +119,7 @@ void GLApp::GLModel::draw() {
 }
 
 
-void GLApp::init() {
+void GLApp::Init() {
 	// Start color = red.
 	r = 1.0f;
 
@@ -126,24 +127,24 @@ void GLApp::init() {
 
 	glViewport(0, 0, GLHelper::width, GLHelper::height);
 
-	mdl.setup_vao();
-	mdl.setup_shdrpgm();
+	mdl.Setup_Vao();
+	mdl.Setup_Shdrpgm();
 
 }
 
-void GLApp::update() {
+void GLApp::Update() {
 	// Update bg color for rgb effect.
 	ColorLerpBG();
 	glClearColor(r, g, b, 1.0f);
 }
 
-void GLApp::draw() {
+void GLApp::Draw() {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	mdl.draw();
+	mdl.Draw();
 }
 
-void GLApp::cleanup() {
+void GLApp::Clean_Up() {
 	// empty for now
 }
 
@@ -153,24 +154,24 @@ void ColorLerpBG() {
 	{
 	case R:
 		if (g >= 1.0f) {
-			r -= GLHelper::delta_time;
+			r -= MPL::Time.DeltaTime();
 			if (r <= 0.0f) { currentColor = G; }
 		}
-		else { g += GLHelper::delta_time; }
+		else { g += MPL::Time.DeltaTime(); }
 		break;
 	case G:
 		if (b >= 1.0f) {
-			g -= GLHelper::delta_time;
+			g -= MPL::Time.DeltaTime();
 			if (g <= 0.0f) { currentColor = B; }
 		}
-		else { b += GLHelper::delta_time; }
+		else { b += MPL::Time.DeltaTime(); }
 		break;
 	case B:
 		if (r >= 1.0f) {
-			b -= GLHelper::delta_time;
+			b -= MPL::Time.DeltaTime();
 			if (b <= 0.0f) { currentColor = R; }
 		}
-		else { r += GLHelper::delta_time; }
+		else { r += MPL::Time.DeltaTime(); }
 		break;
 	default:
 		break;
