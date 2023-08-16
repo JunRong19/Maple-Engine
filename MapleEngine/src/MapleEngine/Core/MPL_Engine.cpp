@@ -7,36 +7,81 @@ namespace MPL {
 	MPL_Engine::MPL_Engine() : run(true), window(NULL) {}
 
 	MPL_Engine::~MPL_Engine() {
+		// Delete window.
+		glfwDestroyWindow(MPL::Core.Window());
+		// Close program.
 		glfwTerminate();
 	}
 
 	void MPL_Engine::Initialize() {
-		// Initialize opengl backend.
-		if (!GLHelper::Init(1920, 1080, "MapleEngine")) {
-			std::cout << "Unable to create OpenGL context" << std::endl;
+		if (!glfwInit()) {
+			std::cout << "GLFW init has failed - abort program!!!" << std::endl;
 			std::exit(EXIT_FAILURE);
 		}
 
-		GLHelper::Print_Specs();
+		// In case a GLFW function fails, an error is reported to callback function
+		glfwSetErrorCallback(GLHelper::Error_Cb);
 
-		// Get window.
-		window = GLHelper::ptr_window;
+		// Before asking GLFW to create an OpenGL context, we specify the minimum constraints
+		// in that context:
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+		glfwWindowHint(GLFW_RED_BITS, 8); glfwWindowHint(GLFW_GREEN_BITS, 8);
+		glfwWindowHint(GLFW_BLUE_BITS, 8); glfwWindowHint(GLFW_ALPHA_BITS, 8);
+		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE); // window dimensions are static
+
+		window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, window_title.c_str(), NULL, NULL);
+		if (!window) {
+			std::cerr << "GLFW unable to create OpenGL context - abort program\n";
+			glfwTerminate();
+			std::exit(EXIT_FAILURE);
+		}
+		glfwMakeContextCurrent(window);
+
 		// Configure viewport to fit the screen.
 		glViewport(0, 0, MPL::WINDOW_WIDTH, MPL::WINDOW_HEIGHT);
+
+		glfwSetFramebufferSizeCallback(window, GLHelper::Fbsize_Cb);
+		glfwSetKeyCallback(window, GLHelper::Key_Cb);
+		glfwSetMouseButtonCallback(window, GLHelper::Mousebutton_Cb);
+		glfwSetCursorPosCallback(window, GLHelper::Mousepos_Cb);
+		glfwSetScrollCallback(window, GLHelper::Mousescroll_Cb);
+
+		// this is the default setting ...
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+		// Initialize entry points to OpenGL functions and extensions
+		GLenum err = glewInit();
+		if (GLEW_OK != err) {
+			std::cerr << "Unable to initialize GLEW - error: "
+				<< glewGetErrorString(err) << " abort program" << std::endl;
+			std::exit(EXIT_FAILURE);
+		}
+		if (GLEW_VERSION_4_5) {
+			std::cout << "Using glew version: " << glewGetString(GLEW_VERSION) << std::endl;
+			std::cout << "Driver supports OpenGL 4.5\n" << std::endl;
+		}
+		else {
+			std::cerr << "Driver doesn't support OpenGL 4.5 - abort program" << std::endl;
+			std::exit(EXIT_FAILURE);
+		}
 	}
 
 	void MPL_Engine::Update() {
-		WindowTitle();
+		Set_Window_Title();
 	}
 
 	void MPL_Engine::Quit() {
 		run = false;
 	}
 
-	void MPL_Engine::WindowTitle() {
+	void MPL_Engine::Set_Window_Title() {
 		// Update title of window.
 		std::stringstream title;
 		title << "MapleEngine | FPS: " << std::fixed << std::setprecision(2) << MPL::Time.Fps();
-		glfwSetWindowTitle(GLHelper::ptr_window, title.str().c_str());
+		glfwSetWindowTitle(window, title.str().c_str());
 	}
+
 }

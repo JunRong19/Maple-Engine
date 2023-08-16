@@ -22,7 +22,7 @@ namespace MPL {
 	}
 
 	MPL_Input::~MPL_Input() {
-		return;
+		MPL::Input.Free();
 	}
 
 	void MPL_Input::Initialize() {

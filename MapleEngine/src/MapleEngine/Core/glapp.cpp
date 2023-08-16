@@ -125,8 +125,6 @@ void GLApp::Init() {
 
 	glClearColor(r, g, b, 1.0f);
 
-	glViewport(0, 0, GLHelper::width, GLHelper::height);
-
 	mdl.Setup_Vao();
 	mdl.Setup_Shdrpgm();
 
