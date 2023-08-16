@@ -16,8 +16,8 @@ GLApp::GLModel GLApp::mdl;
 void GLApp::GLModel::Setup_Vao() {
 	// Define vertex position and color attributes
 	std::array<glm::vec2, 4> pos_vert{
-		glm::vec2(0.5f, -0.5f), glm::vec2(0.5f, 0.5f),
-		glm::vec2(-0.5f, 0.5f), glm::vec2(-0.5f, -0.5f)
+		glm::vec2(1.f, -1.f), glm::vec2(1.f, 1.f),
+		glm::vec2(-1.f, 1.f), glm::vec2(-1.f, -1.f)
 	};
 	std::array<glm::vec3, 4> color_vert{
 	glm::vec3(1.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f),
@@ -138,6 +138,7 @@ void GLApp::Update() {
 
 void GLApp::Draw() {
 	glClear(GL_COLOR_BUFFER_BIT);
+	// Configure viewport to fit the screen.
 
 	mdl.Draw();
 }

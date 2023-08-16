@@ -16,7 +16,6 @@ namespace MPL {
 
 	private:
 		MPL_Graphics();
-		void Initialize_ImGui();
 	};
 
 	static MPL_Graphics& Graphics = MPL_Graphics::Ref();

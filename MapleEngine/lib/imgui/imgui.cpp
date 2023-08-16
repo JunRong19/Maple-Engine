@@ -7438,7 +7438,7 @@ bool ImGui::Begin(const char* name, bool* p_open, ImGuiWindowFlags flags)
 	}
 
 	return !window->SkipItems;
-	}
+}
 
 void ImGui::End()
 {

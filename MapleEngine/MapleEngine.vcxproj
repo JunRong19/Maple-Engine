@@ -47,6 +47,7 @@
     <ClCompile Include="src\MapleEngine\Core\MPL_Engine.cpp" />
     <ClCompile Include="src\MapleEngine\Core\MPL_Events.cpp" />
     <ClCompile Include="src\MapleEngine\Core\MPL_Graphics.cpp" />
+    <ClCompile Include="src\MapleEngine\Core\MPL_ImGui.cpp" />
     <ClCompile Include="src\MapleEngine\Core\MPL_Input.cpp" />
     <ClCompile Include="src\MapleEngine\Core\MPL_Timer.cpp" />
     <ClCompile Include="src\MapleEngine\Core\glapp.cpp" />
@@ -68,6 +69,7 @@
     <ClInclude Include="include\MPL_Engine.h" />
     <ClInclude Include="include\MPL_Events.h" />
     <ClInclude Include="include\MPL_Graphics.h" />
+    <ClInclude Include="include\MPL_ImGui.h" />
     <ClInclude Include="include\MPL_Input.h" />
     <ClInclude Include="include\MPL_Timer.h" />
     <ClInclude Include="include\EBO.h" />

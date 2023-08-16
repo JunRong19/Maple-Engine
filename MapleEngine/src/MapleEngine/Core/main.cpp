@@ -27,11 +27,9 @@ int main() {
 		MPL::Core.Update();
 		// Update app.
 		GLApp::Update();
-		// Draw app.
-		GLApp::Draw();
-		// Draw engine's UI.
 		MPL::Graphics.Draw();
-
+		// Draw UI.
+		MPL::ImGui.Draw();
 		// Swap buffers: front <-> back
 		glfwSwapBuffers(MPL::Core.Window());
 	}
@@ -48,6 +46,7 @@ static void Initialize_Engine() {
 	MPL::Time.Initialize();
 	MPL::Event.Initialize();
 	MPL::Graphics.Initialize();
+	MPL::ImGui.Initialize();
 }
 
 void Clean_Up() {
