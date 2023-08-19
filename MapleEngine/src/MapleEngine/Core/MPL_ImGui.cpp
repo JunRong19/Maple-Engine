@@ -122,6 +122,8 @@ namespace MPL {
 			ImGui::EndFrame();
 
 			layouts[root_dock] = window_name_to_dock_id;
+
+			file.close();
 		}
 	}
 

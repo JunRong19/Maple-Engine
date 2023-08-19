@@ -6,11 +6,6 @@ namespace MPL {
 
 	class MPL_Engine {
 	public:
-		MPL_Engine();
-		MPL_Engine(MPL_Engine const&) = delete;
-		MPL_Engine operator=(MPL_Engine const&) = delete;
-		~MPL_Engine();
-
 		static MPL_Engine& Ref() {
 			static MPL_Engine ref;
 			return ref;
@@ -26,14 +21,19 @@ namespace MPL {
 		inline const size_t Get_Window_Width() { return WINDOW_WIDTH; }
 		inline const size_t Get_Window_Height() { return WINDOW_HEIGHT; }
 
+	private:
+		MPL_Engine();
+		MPL_Engine(MPL_Engine const&) = delete;
+		MPL_Engine operator=(MPL_Engine const&) = delete;
+		~MPL_Engine();
+
+	private:
+		void Set_Window_Title();
 
 	private:
 		bool run;
 		GLFWwindow* window;
 		std::string window_title;
-
-	private:
-		void Set_Window_Title();
 	};
 
 	static MPL_Engine& Core = MPL_Engine::Ref();

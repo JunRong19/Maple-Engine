@@ -105,6 +105,9 @@
     <ClCompile Include="src\MapleEngine\Core\MPL_ImGui.cpp">
       <Filter>Engine\_Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\MapleEngine\Core\MPL_Configs.cpp">
+      <Filter>Engine\_Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MPL.h">
@@ -177,6 +180,9 @@
       <Filter>Engine\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="include\MPL_ImGui.h">
+      <Filter>Engine\Include\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MPL_Configs.h">
       <Filter>Engine\Include\Core</Filter>
     </ClInclude>
   </ItemGroup>

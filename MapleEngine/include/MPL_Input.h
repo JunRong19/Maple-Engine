@@ -31,10 +31,6 @@ namespace MPL {
 
 	class MPL_Input {
 	public:
-		~MPL_Input();
-		MPL_Input(MPL_Input const&) = delete;
-		MPL_Input operator=(MPL_Input const&) = delete;
-
 		static MPL_Input& Ref() {
 			static MPL_Input ref;
 			return ref;
@@ -53,11 +49,15 @@ namespace MPL {
 		Event<double> onMouseScroll;
 
 	private:
+		~MPL_Input();
+		MPL_Input(MPL_Input const&) = delete;
+		MPL_Input operator=(MPL_Input const&) = delete;
+
+	private:
 		MPL_Input();
 
 	private:
 		glm::dvec2 mousePos;
-
 	};
 	static MPL_Input& Input = MPL_Input::Ref();
 }

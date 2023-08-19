@@ -41,6 +41,10 @@ int main() {
 }
 
 static void Initialize_Engine() {
+	// Load saved config for engine.
+	MPL::Config.Load_Configs();
+
+	// Load main engine functionalities.
 	MPL::Core.Initialize();
 	MPL::Input.Initialize();
 	MPL::Time.Initialize();

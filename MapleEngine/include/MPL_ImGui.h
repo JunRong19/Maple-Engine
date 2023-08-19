@@ -1,12 +1,7 @@
 #pragma once
 namespace MPL {
 	class MPL_ImGui {
-
 	public:
-		~MPL_ImGui();
-		MPL_ImGui(MPL_ImGui const&) = delete;
-		MPL_ImGui operator=(MPL_ImGui const&) = delete;
-
 		static MPL_ImGui& Ref() {
 			static MPL_ImGui ref;
 			return ref;
@@ -17,6 +12,11 @@ namespace MPL {
 
 	private:
 		MPL_ImGui();
+		~MPL_ImGui();
+		MPL_ImGui(MPL_ImGui const&) = delete;
+		MPL_ImGui operator=(MPL_ImGui const&) = delete;
+
+	private:
 		void Build_Default_Layout();
 		void Start_Frame();
 		void Render_ImGui();
