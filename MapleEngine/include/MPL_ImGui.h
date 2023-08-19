@@ -1,6 +1,7 @@
 #pragma once
 namespace MPL {
 	class MPL_ImGui {
+
 	public:
 		~MPL_ImGui();
 		MPL_ImGui(MPL_ImGui const&) = delete;
@@ -17,8 +18,13 @@ namespace MPL {
 	private:
 		MPL_ImGui();
 		void Build_Default_Layout();
-		void Set_Default_Layout();
-	};
+		void Start_Frame();
+		void Render_ImGui();
+		void Load_Layouts();
+		void Render_Engine_Layout();
 
+	public:
+		inline static std::unordered_map<std::string, std::unordered_map<std::string, ImGuiID>> layouts;
+	};
 	static MPL_ImGui& ImGui = MPL_ImGui::Ref();
 }

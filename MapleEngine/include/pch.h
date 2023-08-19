@@ -15,6 +15,7 @@
 #include <queue>
 #include <map>
 #include <array>
+#include <string>
 
 // IMGUI (Include before GLFW and GLEW)
 #include <imgui.h>

@@ -1,0 +1,5 @@
+main				// root id
+Hierarchy main 3 0.8		// dock format
+Inspector main 1 0.2
+Project Hierarchy 2 0.3
+Scene Hierarchy 1 0.8
