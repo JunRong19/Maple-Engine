@@ -42,7 +42,13 @@ int main() {
 
 static void Initialize_Engine() {
 	// Load saved config for engine.
-	MPL::Config.Load_Configs();
+	MPL_Configs configs;
+	configs.Load();
+
+	if (!configs.Status()) {
+		std::cerr << "CONFIG ERROR: Unable to load configs for engine.";
+		std::exit(EXIT_FAILURE);
+	}
 
 	// Load main engine functionalities.
 	MPL::Core.Initialize();

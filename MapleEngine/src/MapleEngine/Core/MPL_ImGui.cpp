@@ -1,6 +1,7 @@
 #include <pch.h>
 #include <MPL_ImGui.h>
 #include <MPL_Engine.h>
+#include <MPL_Configs.h>
 #include <filesystem>
 
 namespace MPL {
@@ -24,8 +25,26 @@ namespace MPL {
 		ImGui::StyleColorsDark();
 		ImGui_ImplGlfw_InitForOpenGL(MPL::Core.Window(), true);
 		ImGui_ImplOpenGL3_Init("#version 450");
-		//Build_Default_Layout();
-		Load_Layouts();
+
+		// Load all layouts available in res folder.
+		if (Load_Layouts() == false) {
+			// Create a default layout if no layout found.
+			Build_Default_Layout(true);
+			std::cerr << "LAYOUT ERROR: No layout found in res folder. Using default layout." << std::endl;
+		}
+
+		MPL_Configs configs;
+		// Check if saved layout is loaded.
+		if (layouts.count(configs.Get_Data().at("LAYOUT"))) {
+			// Set current layout as saved layout.
+			curr_layout = configs.Get_Data().at("LAYOUT");
+		}
+		else {
+			// Saved layout not found. Use default layout.
+			curr_layout = DEFAULT_LAYOUT_NAME;
+			configs.Set_Data(std::make_pair("LAYOUT", DEFAULT_LAYOUT_NAME));
+			std::cerr << "LAYOUT ERROR: Unable to find saved layout. Using default." << std::endl;
+		}
 	}
 
 	void MPL_ImGui::Draw() {
@@ -43,7 +62,7 @@ namespace MPL {
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 
-	void MPL_ImGui::Load_Layouts() {
+	bool const MPL_ImGui::Load_Layouts() {
 		std::string path = "res/dock_layouts";
 		for (const auto& entry : std::filesystem::directory_iterator(path)) {
 
@@ -124,18 +143,21 @@ namespace MPL {
 			layouts[root_dock] = window_name_to_dock_id;
 
 			file.close();
+			++layouts_count;
 		}
+
+		return (layouts_count > 0) ? true : false;
 	}
 
 	void MPL_ImGui::Render_Engine_Layout() {
-		// If "main" layout is deleted or missing, build a new one.
-		if (!layouts.count("main")) {
+		// If current layout is deleted or missing, use default one.
+		if (!layouts.count(curr_layout)) {
 			Build_Default_Layout();
-			std::cerr << "LAYOUT ERROR: \"main\" layout missing. Building new a new one." << std::endl;
+			std::cerr << "LAYOUT ERROR: \"" << curr_layout << "\" layout missing. Building new a new one." << std::endl;
 		}
 
 		Start_Frame();
-		for (auto& layout : layouts["main"]) {
+		for (auto& layout : layouts[curr_layout]) {
 			ImGui::Begin(layout.first.c_str());
 			ImGui::End();
 		}
@@ -143,7 +165,7 @@ namespace MPL {
 		Render_ImGui();
 	}
 
-	void MPL_ImGui::Build_Default_Layout() {
+	void MPL_ImGui::Build_Default_Layout(bool const set_active) {
 
 		std::unordered_map<std::string, ImGuiID> window_name_to_dock_id;
 
@@ -153,44 +175,47 @@ namespace MPL {
 
 		ImVec2 workCenter = ImGui::GetMainViewport()->GetWorkCenter();
 
-		ImGuiID id = ImGui::GetID("main");
+		ImGuiID rootId = ImGui::GetID("default");
 
-		ImGui::DockBuilderRemoveNode(id);
-		ImGui::DockBuilderAddNode(id);
+		ImGui::DockBuilderRemoveNode(rootId);
+		ImGui::DockBuilderAddNode(rootId);
 
 		ImVec2 size{ workSize.x, workSize.y };
 		ImVec2 nodePos{ workCenter.x - size.x * 0.5f, workCenter.y - size.y * 0.5f };
 
 		// Set the size and position:
-		ImGui::DockBuilderSetNodeSize(id, size);
-		ImGui::DockBuilderSetNodePos(id, nodePos);
+		ImGui::DockBuilderSetNodeSize(rootId, size);
+		ImGui::DockBuilderSetNodePos(rootId, nodePos);
 
-		ImGuiID dock1 = ImGui::DockBuilderSplitNode(id, ImGuiDir_Left, 0.8f, nullptr, &id);
+		ImGuiID hierarchy_dock = ImGui::DockBuilderSplitNode(
+			rootId, ImGuiDir_Left, 0.8f, nullptr, &rootId);
 
+		ImGuiID inspector_dock = ImGui::DockBuilderSplitNode(
+			rootId, ImGuiDir_Right, 0.2f, nullptr, &rootId);
 
-		ImGuiID dock2 = ImGui::DockBuilderSplitNode(id, ImGuiDir_Right, 0.2f, nullptr, &id);
+		ImGuiID project_dock = ImGui::DockBuilderSplitNode(
+			hierarchy_dock, ImGuiDir_Down, 0.3f, nullptr, &hierarchy_dock);
 
-		ImGuiID dock3 = ImGui::DockBuilderSplitNode(dock1, ImGuiDir_Down, 0.3f, nullptr, &dock1);
+		ImGuiID scene_dock = ImGui::DockBuilderSplitNode(
+			hierarchy_dock, ImGuiDir_Right, 0.8f, nullptr, &hierarchy_dock);
 
-		ImGuiID dock4 = ImGui::DockBuilderSplitNode(dock1, ImGuiDir_Right, 0.8f, nullptr, &dock1);
+		ImGui::DockBuilderDockWindow("Hierarchy", hierarchy_dock);
+		ImGui::DockBuilderDockWindow("Inspector", inspector_dock);
+		ImGui::DockBuilderDockWindow("Project", project_dock);
+		ImGui::DockBuilderDockWindow("Scene", scene_dock);
 
-		ImGui::DockBuilderDockWindow("Hierarchy", dock1);
-		ImGui::DockBuilderDockWindow("Inspector", dock2);
-		ImGui::DockBuilderDockWindow("Project", dock3);
-		ImGui::DockBuilderDockWindow("Scene", dock4);
+		window_name_to_dock_id["default"] = rootId;
+		window_name_to_dock_id["Hierarchy"] = hierarchy_dock;
+		window_name_to_dock_id["Inspector"] = inspector_dock;
+		window_name_to_dock_id["Project"] = project_dock;
+		window_name_to_dock_id["Scene"] = scene_dock;
+		layouts[DEFAULT_LAYOUT_NAME] = window_name_to_dock_id;
 
-		window_name_to_dock_id["main"] = id;
-		window_name_to_dock_id["Hierarchy"] = dock1;
-		window_name_to_dock_id["Inspector"] = dock2;
-		window_name_to_dock_id["Project"] = dock3;
-		window_name_to_dock_id["Scene"] = dock4;
-		layouts["main"] = window_name_to_dock_id;
-
-		ImGui::DockBuilderFinish(id);
+		ImGui::DockBuilderFinish(rootId);
 
 		ImGui::EndFrame();
 
-
+		if (set_active) curr_layout = DEFAULT_LAYOUT_NAME;
 	}
 }
 

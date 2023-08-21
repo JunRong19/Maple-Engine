@@ -1,9 +1,5 @@
 #pragma once
 namespace MPL {
-	// Window
-	const size_t WINDOW_WIDTH = 1920;
-	const size_t WINDOW_HEIGHT = 1080;
-
 	class MPL_Engine {
 	public:
 		static MPL_Engine& Ref() {
@@ -16,10 +12,10 @@ namespace MPL {
 		void Quit();
 
 		inline GLFWwindow* Window() { return window; }
-		inline const bool Run() const { return run; }
+		inline bool const Run() const { return run; }
 
-		inline const size_t Get_Window_Width() { return WINDOW_WIDTH; }
-		inline const size_t Get_Window_Height() { return WINDOW_HEIGHT; }
+		inline  size_t const Get_Window_Width() { return WINDOW_WIDTH; }
+		inline  size_t const Get_Window_Height() { return WINDOW_HEIGHT; }
 
 	private:
 		MPL_Engine();
@@ -34,6 +30,9 @@ namespace MPL {
 		bool run;
 		GLFWwindow* window;
 		std::string window_title;
+		// Window
+		uint32_t WINDOW_WIDTH = 1920;
+		uint32_t WINDOW_HEIGHT = 1080;
 	};
 
 	static MPL_Engine& Core = MPL_Engine::Ref();

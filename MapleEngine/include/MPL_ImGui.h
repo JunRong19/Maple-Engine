@@ -17,14 +17,19 @@ namespace MPL {
 		MPL_ImGui operator=(MPL_ImGui const&) = delete;
 
 	private:
-		void Build_Default_Layout();
+		void Build_Default_Layout(bool const set_active = true);
 		void Start_Frame();
 		void Render_ImGui();
-		void Load_Layouts();
+		bool const Load_Layouts();
 		void Render_Engine_Layout();
 
 	public:
 		inline static std::unordered_map<std::string, std::unordered_map<std::string, ImGuiID>> layouts;
+
+	private:
+		static constexpr const char* DEFAULT_LAYOUT_NAME = "main";
+		std::string curr_layout;
+		uint16_t layouts_count;
 	};
 	static MPL_ImGui& ImGui = MPL_ImGui::Ref();
 }

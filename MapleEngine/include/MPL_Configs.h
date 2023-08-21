@@ -1,24 +1,22 @@
 #pragma once
 
-namespace MPL {
-	class MPL_Configs {
+using configs_fmt = std::unordered_map<std::string, std::string>;
 
-	public:
-		static MPL_Configs& Ref() {
-			static MPL_Configs ref;
-			return ref;
-		}
+static class MPL_Configs {
+public:
+	void Load();
+	void Save(std::pair<std::string, std::string> const& new_config);
+	configs_fmt Create_Default_Configs_File();
+	configs_fmt Create_Default_Configs_File(std::vector<std::pair<std::string, std::string>> new_configs);
+	configs_fmt Create_Default_Configs_File(std::pair<std::string, std::string> new_config);
+	configs_fmt Default_Configs();
+	void Set_Data(std::pair<std::string, std::string> const& config);
 
-		void Load_Configs();
+	inline bool const Status() { return configs_loaded; }
+	inline static configs_fmt const Get_Data() { return configs; }
 
-	private:
-		MPL_Configs(MPL_Configs const&) = delete;
-		MPL_Configs operator=(MPL_Configs const&) = delete;
-		MPL_Configs();
-		~MPL_Configs();
+private:
+	inline static configs_fmt configs;
+	bool configs_loaded = false;
+};
 
-	};
-	static MPL_Configs& Config = MPL_Configs::Ref();
-
-	inline static std::unordered_map<std::string, std::string> configs;
-}

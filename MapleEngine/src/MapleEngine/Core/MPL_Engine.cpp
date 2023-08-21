@@ -4,7 +4,7 @@
 #include <iomanip>
 
 namespace MPL {
-	MPL_Engine::MPL_Engine() : run(true), window(NULL) {}
+	MPL_Engine::MPL_Engine() {}
 
 	MPL_Engine::~MPL_Engine() {
 		// Delete window.
@@ -32,6 +32,19 @@ namespace MPL {
 		glfwWindowHint(GLFW_BLUE_BITS, 8); glfwWindowHint(GLFW_ALPHA_BITS, 8);
 		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE); // window dimensions are static
 
+		MPL_Configs configs;
+		// Load window dimensions from configs.
+		if (configs.Get_Data().count("WINDOW_HEIGHT") && configs.Get_Data().count("WINDOW_WIDTH")) {
+			// Load window settings from configs.
+			WINDOW_HEIGHT = std::stoul(configs.Get_Data().at("WINDOW_HEIGHT"));
+			WINDOW_WIDTH = std::stoul(configs.Get_Data().at("WINDOW_WIDTH"));
+		}
+		else {
+			WINDOW_HEIGHT = 1080;
+			WINDOW_WIDTH = 1920;
+			std::cerr << "Unable to load window setting from configs. Using default width and height " << std::endl;
+		}
+
 		window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, window_title.c_str(), NULL, NULL);
 		if (!window) {
 			std::cerr << "GLFW unable to create OpenGL context - abort program\n";
@@ -41,7 +54,7 @@ namespace MPL {
 		glfwMakeContextCurrent(window);
 
 		// Configure viewport to fit the screen.
-		glViewport(0, 0, MPL::WINDOW_WIDTH, MPL::WINDOW_HEIGHT);
+		glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
 		glfwSetFramebufferSizeCallback(window, GLHelper::Fbsize_Cb);
 		glfwSetKeyCallback(window, GLHelper::Key_Cb);
@@ -67,6 +80,8 @@ namespace MPL {
 			std::cerr << "Driver doesn't support OpenGL 4.5 - abort program" << std::endl;
 			std::exit(EXIT_FAILURE);
 		}
+		// Start engine.
+		run = true;
 	}
 
 	void MPL_Engine::Update() {
