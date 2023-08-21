@@ -22,6 +22,7 @@ namespace MPL {
 		void Render_ImGui();
 		bool const Load_Layouts();
 		void Render_Engine_Layout();
+		void Initialize_Engine_UI();
 
 	public:
 		inline static std::unordered_map<std::string, std::unordered_map<std::string, ImGuiID>> layouts;

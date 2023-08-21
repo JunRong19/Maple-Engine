@@ -1,13 +1,32 @@
 #include <pch.h>
 #include <MPL_Configs.h>
 
-void MPL_Configs::Set_Data(std::pair<std::string, std::string> const& config) {
-	configs[config.first] = config.second;
-	Save(config);
+void MPL_Configs::Save(std::pair<std::string, std::string> const& new_config) {
+	// Overwrite current config with new config.
+	configs[new_config.first] = new_config.second;
+
+	std::ofstream ofile{ "configs.txt" };
+
+	// Save new config to file.
+	for (auto& config : configs) {
+		ofile << config.first << ": " << config.second << std::endl;
+	}
+	ofile.close();
 }
 
-void MPL_Configs::Save(std::pair<std::string, std::string> const& config) {
-	Create_Default_Configs_File(config);
+void MPL_Configs::Save(std::vector<std::pair<std::string, std::string>> const& new_configs) {
+	// Overwrite current config with new changes.
+	for (auto& config : new_configs) {
+		configs[config.first] = config.second;
+	}
+
+	std::ofstream ofile{ "configs.txt" };
+
+	// Save new config to file.
+	for (auto& config : configs) {
+		ofile << config.first << ": " << config.second << std::endl;
+	}
+	ofile.close();
 }
 
 void MPL_Configs::Load() {
@@ -18,7 +37,6 @@ void MPL_Configs::Load() {
 		std::cout << "Missing config.txt file. Creating new config.txt file" << std::endl;
 		configs = Create_Default_Configs_File();
 		configs_loaded = true;
-		config_file.close();
 	}
 	else {
 		// Load configs.
@@ -40,53 +58,17 @@ void MPL_Configs::Load() {
 }
 
 configs_fmt MPL_Configs::Create_Default_Configs_File() {
-	// GET DEFAULT CONFIGS
-	configs_fmt config_cpy = Default_Configs();
+	// Get default configs.
+	configs_fmt default_configs = Default_Configs();
 
 	std::ofstream ofile{ "configs.txt" };
 
 	// Create a new config file.
-	for (auto& config : config_cpy) {
+	for (auto& config : default_configs) {
 		ofile << config.first << ": " << config.second << std::endl;
 	}
 	ofile.close();
-	return config_cpy;
-}
-
-configs_fmt MPL_Configs::Create_Default_Configs_File(std::pair<std::string, std::string> new_config) {
-	// GET DEFAULT CONFIGS
-	configs_fmt config_cpy = Default_Configs();
-
-	// Overwrite default config with new config.
-	config_cpy[new_config.first] = new_config.second;
-
-	std::ofstream ofile{ "configs.txt" };
-
-	// Create a new config file.
-	for (auto& config : config_cpy) {
-		ofile << config.first << ": " << config.second << std::endl;
-	}
-	ofile.close();
-	return config_cpy;
-}
-
-configs_fmt MPL_Configs::Create_Default_Configs_File(std::vector<std::pair<std::string, std::string>> new_configs) {
-	// GET DEFAULT CONFIGS
-	configs_fmt config_cpy = Default_Configs();
-
-	// Overwrite default config with new changes.
-	for (auto& config : new_configs) {
-		config_cpy[config.first] = config.second;
-	}
-
-	std::ofstream ofile{ "configs.txt" };
-
-	// Create a new config file.
-	for (auto& config : config_cpy) {
-		ofile << config.first << ": " << config.second << std::endl;
-	}
-	ofile.close();
-	return config_cpy;
+	return default_configs;
 }
 
 configs_fmt MPL_Configs::Default_Configs() {
