@@ -23,11 +23,13 @@ namespace MPL {
 		bool const Load_Layouts();
 		void Render_Engine_Layout();
 		void Initialize_Engine_UI();
+		void ShowExampleAppDockSpace();
 
 	public:
 		inline static std::unordered_map<std::string, std::unordered_map<std::string, ImGuiID>> layouts;
 
 	private:
+		static constexpr const char* DOCKSPACE_NAME = "main_dockspace";
 		static constexpr const char* DEFAULT_LAYOUT_NAME = "main";
 		std::string curr_layout;
 		uint16_t layouts_count;

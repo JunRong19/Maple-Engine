@@ -1,5 +1,4 @@
-main				// root id
-Hierarchy main 3 0.8		// dock format
-Inspector main 1 0.2
-Project Hierarchy 2 0.3
-Scene Hierarchy 1 0.8
+Inspector 1 0.2		// dock format: Dock name | Direction of split: 0: UP, 1: RIGHT, 2: DOWN, 3: LEFT, 4: NONE | Size ratio for node at direction
+Project 2 0.3
+Hierarchy 3 0.2		
+Scene 4 0
