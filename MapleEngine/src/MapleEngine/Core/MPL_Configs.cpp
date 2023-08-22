@@ -61,7 +61,11 @@ configs_fmt MPL_Configs::Create_Default_Configs_File() {
 	// Get default configs.
 	configs_fmt default_configs = Default_Configs();
 
+	const char* path = "res/dock_layouts/backup-layout.txt";
 	std::ofstream ofile{ "configs.txt" };
+	if (!ofile) {
+		std::cerr << "ERROR: Unable to write to file path: " << path << std::endl;
+	}
 
 	// Create a new config file.
 	for (auto& config : default_configs) {
