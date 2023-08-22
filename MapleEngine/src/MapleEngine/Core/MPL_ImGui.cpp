@@ -188,7 +188,6 @@ namespace MPL {
 				ImGui::DockBuilderAddNode(dockspace_id, dockspace_flags | ImGuiDockNodeFlags_DockSpace);
 				ImGui::DockBuilderSetNodeSize(dockspace_id, viewport->Size);
 
-
 				ImGui::DockBuilderFinish(dockspace_id);
 
 				std::string path = "res/dock_layouts";
@@ -205,56 +204,43 @@ namespace MPL {
 					// Create docks.
 					while (getline(file, line)) {
 						// Dock data:
+						char dock_build_mode;
 						std::string dock_name;
-						int direction_int;	// 0: UP | 1: RIGHT | 2: DOWN | 3: LEFT
-						ImGuiDir direction = ImGuiDir_None;
+						int direction;	// 0: LEFT | 1: RIGHT | 2: UP | 3: DOWN
 						float size_ratio{};
+						std::string parent_dock;	// For tabs
 
 						// Get dock data from line.
 						std::istringstream ss_line{ line };
-						ss_line >> dock_name >> direction_int >> size_ratio;
+						ss_line >> dock_build_mode;
 
-						// Initialize direction.
-						switch (direction_int)
+						switch (dock_build_mode)
 						{
-						case 0:
-							direction = ImGuiDir_Up;
-							break;
-						case 1:
-							direction = ImGuiDir_Right;
-							break;
-						case 2:
-							direction = ImGuiDir_Down;
-							break;
-						case 3:
-							direction = ImGuiDir_Left;
-							break;
-						case 4:
-							direction = ImGuiDir_None;
-							break;
-						default:
-							break;
-						}
+						case 'd':
+							ss_line >> dock_name >> direction >> size_ratio;
 
-						if (direction == ImGuiDir_None) {
-							dock_name_to_id[dock_name] = dockspace_id;
-							ImGui::DockBuilderDockWindow(dock_name.c_str(), dockspace_id);
-						}
-						else {
-							if (dock_name == "Hierarchy") {
-								ImGui::DockBuilderDockWindow(dock_name.c_str(), dock_name_to_id["Project"]);
-								dock_name_to_id[dock_name] = dock_name_to_id["Project"];
+							if (static_cast<ImGuiDir>(direction) == ImGuiDir_None) {
+								dock_name_to_id[dock_name] = dockspace_id;
+								ImGui::DockBuilderDockWindow(dock_name.c_str(), dockspace_id);
 							}
 							else {
-								ImGuiID dock = ImGui::DockBuilderSplitNode(dockspace_id, direction, size_ratio, nullptr, &dockspace_id);
+								ImGuiID dock = ImGui::DockBuilderSplitNode(dockspace_id, static_cast<ImGuiDir>(direction), size_ratio, nullptr, &dockspace_id);
 								dock_name_to_id[dock_name] = dock;
 
 								// Finish creating dock.
 								ImGui::DockBuilderDockWindow(dock_name.c_str(), dock);
 							}
+							break;
+						case 't':
+							ss_line >> dock_name >> parent_dock;
+							ImGui::DockBuilderDockWindow(dock_name.c_str(), dock_name_to_id[parent_dock]);
+							dock_name_to_id[dock_name] = dock_name_to_id[parent_dock];
+							break;
+						default:
+							std::cout << "ERROR: Incorrect build mode prefix." << std::endl;
+							break;
 						}
 					}
-
 					// End docks building process.
 					ImGui::DockBuilderFinish(dockspace_id);
 
@@ -267,7 +253,6 @@ namespace MPL {
 		ImGui::End();
 		Render_Engine_Layout();
 	}
-
 	void MPL_ImGui::Start_ImGui_Render() {
 		// Create new ImGui frame for rendering.
 		ImGui_ImplOpenGL3_NewFrame();
