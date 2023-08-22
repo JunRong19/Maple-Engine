@@ -187,8 +187,8 @@ namespace MPL {
 
 		// Build engine's layout.
 		Start_Frame();
-		for (auto& layout : layouts[curr_layout]) {
-			ImGui::Begin(layout.first.c_str());
+		for (auto& dock : layouts[curr_layout]) {
+			ImGui::Begin(dock.first.c_str());
 			ImGui::End();
 		}
 		Render_ImGui();
