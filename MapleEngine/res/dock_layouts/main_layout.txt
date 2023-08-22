@@ -1,5 +1,6 @@
-d Inspector 1 0.2		// d: Create dock | Dock name | Direction | Size ratio
-d Project 3 0.3		
+main
+d Inspector 1 0.2		// dock format: Dock name | Direction of split: 0: UP, 1: RIGHT, 2: DOWN, 3: LEFT, 4: NONE | Size ratio for node at direction
+d Project 3 0.3
 d Hierarchy 0 0.2		
 d Scene -1 0
-t Game Scene			// t: Create Tab in parent dock | Dock name | Parent dock
+t Game Scene

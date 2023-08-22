@@ -195,58 +195,80 @@ namespace MPL {
 				for (const auto& entry : std::filesystem::directory_iterator(path)) {
 					std::ifstream file{ entry.path()  ,std::ios::in };
 					if (!file) {
-						std::cout << "ERROR: Unable to load layout at: " << entry.path() << std::endl;
+						std::cerr << "ERROR: Unable to load layout at: " << entry.path() << std::endl;
 					}
 
-					std::string line;
-					std::unordered_map<std::string, ImGuiID> dock_name_to_id;
+					std::string layout_name;	// Name of this layout.
+					std::string line;			// Line buffer when reading file contents.
+					std::unordered_map<std::string, ImGuiID> dock_name_to_id;	// Store docks and their IDs.
+
+					// Get name of layout.
+					getline(file, line);
+					std::istringstream ss_line{ line };
+					ss_line >> layout_name;
 
 					// Create docks.
 					while (getline(file, line)) {
-						// Dock data:
-						char dock_build_mode;
-						std::string dock_name;
-						int direction;	// 0: LEFT | 1: RIGHT | 2: UP | 3: DOWN
-						float size_ratio{};
-						std::string parent_dock;	// For tabs
 
-						// Get dock data from line.
 						std::istringstream ss_line{ line };
+
+						char dock_build_mode;	// Create dock or dock tab.
+						std::string dock_name;	// Name of dock.
+						int direction;			// 0: LEFT | 1: RIGHT | 2: UP | 3: DOWN
+						float size_ratio{};		// Size ratio of dock.
+						std::string parent_dock;// Parent dock of dock tab.
+
+						// Get type of dock to create.
 						ss_line >> dock_build_mode;
 
 						switch (dock_build_mode)
 						{
 						case 'd':
+							// Get dock info.
 							ss_line >> dock_name >> direction >> size_ratio;
-
+							// Create ontop of dock space.
 							if (static_cast<ImGuiDir>(direction) == ImGuiDir_None) {
+								// Add to map.
 								dock_name_to_id[dock_name] = dockspace_id;
+								// Create dock.
 								ImGui::DockBuilderDockWindow(dock_name.c_str(), dockspace_id);
 							}
 							else {
+								// Split dockspace for new dock.
 								ImGuiID dock = ImGui::DockBuilderSplitNode(dockspace_id, static_cast<ImGuiDir>(direction), size_ratio, nullptr, &dockspace_id);
+								// Add to map.
 								dock_name_to_id[dock_name] = dock;
-
-								// Finish creating dock.
+								// Create dock.
 								ImGui::DockBuilderDockWindow(dock_name.c_str(), dock);
 							}
 							break;
 						case 't':
+							// Create tab dock info.
 							ss_line >> dock_name >> parent_dock;
-							ImGui::DockBuilderDockWindow(dock_name.c_str(), dock_name_to_id[parent_dock]);
-							dock_name_to_id[dock_name] = dock_name_to_id[parent_dock];
+							// Check if parent dock had been created.
+							if (dock_name_to_id.count(parent_dock)) {
+								// Get parent dock id.
+								ImGuiID parent_id = dock_name_to_id[parent_dock];
+								// Create tab dock in parent dock.
+								ImGui::DockBuilderDockWindow(dock_name.c_str(), parent_id);
+								// Add to map.
+								dock_name_to_id[dock_name] = parent_id;
+							}
+							else {
+								std::cerr << "ERROR: Parent dock not found. Unable to build " << dock_name << " dock." << std::endl;
+							}
 							break;
 						default:
-							std::cout << "ERROR: Incorrect build mode prefix." << std::endl;
+							std::cerr << "ERROR: Incorrect build mode prefix." << std::endl;
 							break;
 						}
 					}
 					// End docks building process.
 					ImGui::DockBuilderFinish(dockspace_id);
-
 					file.close();
+
 					++layouts_count;
-					layouts[DOCKSPACE_NAME] = dock_name_to_id;
+					layouts[layout_name] = dock_name_to_id;
 				}
 			}
 		}
