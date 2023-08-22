@@ -29,11 +29,11 @@ namespace MPL {
 
 		// Set ImGui flags.
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-		io.ConfigFlags |= ImGuiDockNodeFlags_NoDockingInCentralNode;
 
 		// Load and create UI layout for engine using ImGui.
 		//Initialize_Engine_UI();
 		curr_layout = "main";
+		//Initialize_Dockspace();
 	}
 
 	void MPL_ImGui::Initialize_Engine_UI() {
@@ -65,12 +65,63 @@ namespace MPL {
 	}
 
 	void MPL_ImGui::Draw() {
-		Start_Frame();
+		Start_ImGui_Render();
 		//ImGui::ShowDemoWindow();
 		ShowExampleAppDockSpace();
-		Render_ImGui();
+		Render_Engine_Layout();
+		End_ImGui_Render();
+	}
+
+	void MPL_ImGui::Initialize_Dockspace() {
+		static bool opt_fullscreen = true;
+		static bool opt_padding = false;
+		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
+
+		// We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
+		// because it would be confusing to have two docking targets within each others.
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+
+		ImGuiViewport* viewport = ImGui::GetMainViewport();
+		ImGui::SetNextWindowPos(viewport->Pos);
+		ImGui::SetNextWindowSize(viewport->Size);
+		ImGui::SetNextWindowViewport(viewport->ID);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
 
+		// When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background and handle the pass-thru hole, so we ask Begin() to not render a background.
+		if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
+			window_flags |= ImGuiWindowFlags_NoBackground;
+
+		// Important: note that we proceed even if Begin() returns false (aka window is collapsed).
+		// This is because we want to keep our DockSpace() active. If a DockSpace() is inactive, 
+		// all active windows docked into it will lose their parent and become undocked.
+		// We cannot preserve the docking relationship between an active window and an inactive docking, otherwise 
+		// any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+		ImGui::Begin("DockSpace", nullptr, window_flags);
+		ImGui::PopStyleVar();
+		ImGui::PopStyleVar(2);
+
+		// DockSpace
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+		{
+			ImGuiID dockspace_id = ImGui::GetID(DOCKSPACE_NAME);
+			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+
+			ImGui::DockBuilderRemoveNode(dockspace_id); // clear any previous layout
+			ImGui::DockBuilderAddNode(dockspace_id, dockspace_flags | ImGuiDockNodeFlags_DockSpace);
+			ImGui::DockBuilderSetNodeSize(dockspace_id, viewport->Size);
+
+			ImGui::DockBuilderFinish(dockspace_id);
+		}
+		ImGui::End();
+	}
+
+	void MPL_ImGui::Initialize_Docks() {
 	}
 
 	void MPL_ImGui::ShowExampleAppDockSpace()
@@ -123,18 +174,16 @@ namespace MPL {
 		ImGui::PopStyleVar(2);
 
 		// DockSpace
-		std::string dockspace_name = "main";
 		ImGuiIO& io = ImGui::GetIO();
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 		{
-			ImGuiID dockspace_id = ImGui::GetID(dockspace_name.c_str());
+			dockspace_id = ImGui::GetID(DOCKSPACE_NAME);
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
 			static auto first_time = true;
 			if (first_time)
 			{
 				first_time = false;
-
 				ImGui::DockBuilderRemoveNode(dockspace_id); // clear any previous layout
 				ImGui::DockBuilderAddNode(dockspace_id, dockspace_flags | ImGuiDockNodeFlags_DockSpace);
 				ImGui::DockBuilderSetNodeSize(dockspace_id, viewport->Size);
@@ -189,23 +238,29 @@ namespace MPL {
 
 						if (direction == ImGuiDir_None) {
 							dock_name_to_id[dock_name] = dockspace_id;
-
 							ImGui::DockBuilderDockWindow(dock_name.c_str(), dockspace_id);
 						}
 						else {
-							ImGuiID dock = ImGui::DockBuilderSplitNode(dockspace_id, direction, size_ratio, nullptr, &dockspace_id);
-							dock_name_to_id[dock_name] = dock;
+							if (dock_name == "Hierarchy") {
+								ImGui::DockBuilderDockWindow(dock_name.c_str(), dock_name_to_id["Project"]);
+								dock_name_to_id[dock_name] = dock_name_to_id["Project"];
+							}
+							else {
+								ImGuiID dock = ImGui::DockBuilderSplitNode(dockspace_id, direction, size_ratio, nullptr, &dockspace_id);
+								dock_name_to_id[dock_name] = dock;
 
-							// Finish creating dock.
-							ImGui::DockBuilderDockWindow(dock_name.c_str(), dock);
+								// Finish creating dock.
+								ImGui::DockBuilderDockWindow(dock_name.c_str(), dock);
+							}
 						}
 					}
+
 					// End docks building process.
 					ImGui::DockBuilderFinish(dockspace_id);
 
 					file.close();
 					++layouts_count;
-					layouts[dockspace_name] = dock_name_to_id;
+					layouts[DOCKSPACE_NAME] = dock_name_to_id;
 				}
 			}
 		}
@@ -213,20 +268,21 @@ namespace MPL {
 		Render_Engine_Layout();
 	}
 
-	void MPL_ImGui::Start_Frame() {
+	void MPL_ImGui::Start_ImGui_Render() {
 		// Create new ImGui frame for rendering.
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 	}
 
-	void MPL_ImGui::Render_ImGui() {
+	void MPL_ImGui::End_ImGui_Render() {
 		// Render ImGui windows and end frame.
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 
 	bool const MPL_ImGui::Load_Layouts() {
+
 		std::string path = "res/dock_layouts";
 		// Iterate through all layouts in path.
 		for (const auto& entry : std::filesystem::directory_iterator(path)) {
@@ -245,7 +301,7 @@ namespace MPL {
 			ss_line >> root_dock;
 
 			// Start docks building process.
-			Start_Frame();
+			Start_ImGui_Render();
 
 			// Get screen dimensions.
 			ImVec2 work_size = ImGui::GetMainViewport()->WorkSize;
@@ -333,10 +389,16 @@ namespace MPL {
 
 		// Build engine's layout.
 		//Start_Frame();
+
+
 		for (auto& dock : layouts[curr_layout]) {
 			ImGui::Begin(dock.first.c_str());
 			ImGui::End();
 		}
+
+		//ImGui::SetNextWindowDockID(layouts[curr_layout]["Project"]);
+		//ImGui::Begin("dawdaw");
+		//ImGui::End();
 		//Render_ImGui();
 	}
 
@@ -344,7 +406,7 @@ namespace MPL {
 		std::unordered_map<std::string, ImGuiID> window_name_to_dock_id;
 
 		// Begin building process.
-		Start_Frame();
+		Start_ImGui_Render();
 
 		// Get screen dimensions.
 		ImVec2 workSize = ImGui::GetMainViewport()->WorkSize;
