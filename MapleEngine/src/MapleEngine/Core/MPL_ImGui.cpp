@@ -37,6 +37,9 @@ namespace MPL {
 
 	void MPL_ImGui::Switch_Layout() {
 		curr_layout = "backup-layout";
+
+
+
 	}
 
 	void MPL_ImGui::Initialize_Layouts() {
@@ -123,6 +126,32 @@ namespace MPL {
 				if (ImGui::MenuItem("Scene", "", show_scene)) { show_scene = !show_scene; }
 				if (ImGui::MenuItem("Game", "", show_game)) { show_game = !show_game; }
 				if (ImGui::MenuItem("Lighting", "", show_lighting)) { show_lighting = !show_lighting; }
+
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("Layouts"))
+			{
+				ImGui::BeginListBox(" ");
+				for (auto const& layout : layouts) {
+					if (ImGui::Selectable(layout.first.c_str(), layout.first == curr_layout)) {
+						curr_layout = layout.first.c_str();
+
+						//Remove previous docks
+						ImGui::DockBuilderRemoveNodeDockedWindows(dockspace_id);
+
+						// Set new layout.
+						for (auto const& dock : layouts[curr_layout]) {
+							ImGui::DockBuilderDockWindow(dock.second.name.c_str(), dock.second.id);
+						}
+						ImGui::DockBuilderFinish(dockspace_id);
+					}
+				}
+				ImGui::EndListBox();
 
 				ImGui::EndMenu();
 			}
@@ -217,7 +246,7 @@ namespace MPL {
 
 			std::istringstream ss_line{ line };
 
-			char build_mode;	// Create dock or dock tab.
+			char build_mode;		// Create dock or dock tab.
 			int dock_type;			// Type of dock.
 			int direction;			// 0: LEFT | 1: RIGHT | 2: UP | 3: DOWN | -1: DOCKSPACE
 			float size_ratio{};		// Size ratio of dock.
@@ -309,14 +338,19 @@ namespace MPL {
 		layout_fmt& layout = layouts[curr_layout];
 		std::string name;
 
+		// Check if inspector dock is part of current layout...
 		if ((layout.count(INSPECTOR))) {
+			// Get dock title name.
 			name = layout[INSPECTOR].name.c_str();
 		}
 		else {
+			// Set default title for inspector dock.
 			name = INSPECTOR_WINDOW_TITLE;
+			// Add to dockspace.
 			ImGui::SetNextWindowDockID(dockspace_id, ImGuiCond_FirstUseEver);
 		}
 
+		// Start inspector dock.
 		if (ImGui::Begin(name.c_str(), &show_inspector)) {
 
 		}
@@ -327,14 +361,19 @@ namespace MPL {
 		layout_fmt& layout = layouts[curr_layout];
 		std::string name;
 
+		// Check if project dock is part of current layout...
 		if ((layout.count(PROJECT))) {
+			// Get dock title name.
 			name = layout[PROJECT].name.c_str();
 		}
 		else {
+			// Set default title for project dock.
 			name = PROJECT_WINDOW_TITLE;
+			// Add to dockspace.
 			ImGui::SetNextWindowDockID(dockspace_id, ImGuiCond_FirstUseEver);
 		}
 
+		// Start project dock.
 		if (ImGui::Begin(name.c_str(), &show_project)) {
 
 		}
@@ -345,14 +384,19 @@ namespace MPL {
 		layout_fmt& layout = layouts[curr_layout];
 		std::string name;
 
+		// Check if hierarchy dock is part of current layout...
 		if ((layout.count(HIERARCHY))) {
+			// Get dock title name.
 			name = layout[HIERARCHY].name.c_str();
 		}
 		else {
+			// Set default title for project dock.
 			name = HIERARCHY_WINDOW_TITLE;
+			// Add to dockspace.
 			ImGui::SetNextWindowDockID(dockspace_id, ImGuiCond_FirstUseEver);
 		}
 
+		// Start hierarchy dock.
 		if (ImGui::Begin(name.c_str(), &show_hierarchy)) {
 
 		}
@@ -363,14 +407,19 @@ namespace MPL {
 		layout_fmt& layout = layouts[curr_layout];
 		std::string name;
 
+		// Check if scene dock is part of current layout...
 		if ((layout.count(SCENE))) {
+			// Get dock title name.
 			name = layout[SCENE].name.c_str();
 		}
 		else {
+			// Set default title for scene dock.
 			name = SCENE_WINDOW_TITLE;
+			// Add to dockspace.
 			ImGui::SetNextWindowDockID(dockspace_id, ImGuiCond_FirstUseEver);
 		}
 
+		// Start scene dock.
 		if (ImGui::Begin(name.c_str(), &show_scene)) {
 
 		}
@@ -381,14 +430,19 @@ namespace MPL {
 		layout_fmt& layout = layouts[curr_layout];
 		std::string name;
 
+		// Check if game dock is part of current layout...
 		if ((layout.count(GAME))) {
+			// Get dock title name.
 			name = layout[GAME].name.c_str();
 		}
 		else {
+			// Set default title for game dock.
 			name = GAME_WINDOW_TITLE;
+			// Add to dockspace.
 			ImGui::SetNextWindowDockID(dockspace_id, ImGuiCond_FirstUseEver);
 		}
 
+		// Start game dock.
 		if (ImGui::Begin(name.c_str(), &show_game)) {
 
 		}
@@ -399,14 +453,19 @@ namespace MPL {
 		layout_fmt& layout = layouts[curr_layout];
 		std::string name;
 
+		// Check if lighting dock is part of current layout...
 		if ((layout.count(LIGHTING))) {
+			// Get dock title name.
 			name = layout[LIGHTING].name.c_str();
 		}
 		else {
+			// Set default title for game dock.
 			name = LIGHTING_WINDOW_TITLE;
+			// Add to dockspace.
 			ImGui::SetNextWindowDockID(dockspace_id, ImGuiCond_FirstUseEver);
 		}
 
+		// Start lighting dock.
 		if (ImGui::Begin(name.c_str(), &show_lighting)) {
 
 		}
