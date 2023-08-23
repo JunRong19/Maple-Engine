@@ -30,7 +30,6 @@ namespace MPL {
 	}
 
 	void MPL_ImGui::Initialize_Layouts() {
-
 		// Load all layouts available in res folder.
 		bool layouts_loaded = Load_Layouts_From_Resource();
 		MPL_Configs configs;
@@ -118,7 +117,7 @@ namespace MPL {
 			ImGui::DockBuilderSetNodeSize(dockspace_id, ImGui::GetMainViewport()->Size);
 			ImGui::DockBuilderFinish(dockspace_id);
 
-			// Load all layouts in resource folder set a layout as active.
+			// Load all layouts in resource folder and set a layout as active.
 			Initialize_Layouts();
 		}
 
@@ -155,7 +154,7 @@ namespace MPL {
 
 		std::string layout_name;	// Name of this layout.
 		std::string line;			// Line buffer when reading file contents.
-		std::unordered_map<std::string, ImGuiID> dock_name_to_id;	// Store docks and their IDs.
+		std::unordered_map<DOCK_TYPE, Dock> dock_name_to_id;	// Store docks and their IDs.
 
 		// Get name of layout.
 		getline(file, line);
@@ -164,53 +163,69 @@ namespace MPL {
 
 		// Create docks.
 		while (getline(file, line)) {
+			// Mark as end of file content.
+			if (line == "") break;
 
 			std::istringstream ss_line{ line };
 
-			char dock_build_mode;	// Create dock or dock tab.
-			std::string dock_name;	// Name of dock.
+			char build_mode;	// Create dock or dock tab.
+			int dock_type;				// Type of dock.
 			int direction;			// 0: LEFT | 1: RIGHT | 2: UP | 3: DOWN
 			float size_ratio{};		// Size ratio of dock.
-			std::string parent_dock;// Parent dock of dock tab.
+			int parent;	// Parent dock of dock tab.
+			Dock dock;
 
 			// Get type of dock to create.
-			ss_line >> dock_build_mode;
+			ss_line >> build_mode;
 
-			switch (dock_build_mode)
+			switch (build_mode)
 			{
 			case 'd':
 				// Get dock info.
-				ss_line >> dock_name >> direction >> size_ratio;
+				ss_line >> dock.name >> dock_type >> direction >> size_ratio;
+				// Check if the this type of dock has already been initialized.
+				if (dock_name_to_id.count(static_cast<DOCK_TYPE>(dock_type))) {
+					std::cerr << "ERROR: Dock type has already been initialized: " << dock.name << " dock." << std::endl;
+					continue;
+				}
 				// Create ontop of dock space.
 				if (static_cast<ImGuiDir>(direction) == ImGuiDir_None) {
 					// Add to map.
-					dock_name_to_id[dock_name] = dockspace_id;
+					dock.id = dockspace_id;
+					dock_name_to_id[static_cast<DOCK_TYPE>(dock_type)] = dock;
 					// Create dock.
-					ImGui::DockBuilderDockWindow(dock_name.c_str(), dockspace_id);
+					ImGui::DockBuilderDockWindow(dock.name.c_str(), dockspace_id);
 				}
 				else {
 					// Split dockspace for new dock.
-					ImGuiID dock = ImGui::DockBuilderSplitNode(dockspace_id, static_cast<ImGuiDir>(direction), size_ratio, nullptr, &dockspace_id);
+					ImGuiID new_dock_id = ImGui::DockBuilderSplitNode(dockspace_id, static_cast<ImGuiDir>(direction), size_ratio, nullptr, &dockspace_id);
 					// Add to map.
-					dock_name_to_id[dock_name] = dock;
+					dock.id = new_dock_id;
+					dock_name_to_id[static_cast<DOCK_TYPE>(dock_type)] = dock;
 					// Create dock.
-					ImGui::DockBuilderDockWindow(dock_name.c_str(), dock);
+					ImGui::DockBuilderDockWindow(dock.name.c_str(), new_dock_id);
 				}
 				break;
 			case 't':
 				// Create tab dock info.
-				ss_line >> dock_name >> parent_dock;
+				ss_line >> dock.name >> dock_type >> parent;
+				// Check if the this type of dock has already been initialized.
+				if (dock_name_to_id.count(static_cast<DOCK_TYPE>(dock_type))) {
+					std::cerr << "ERROR: Dock type has already been initialized: " << dock.name << " dock." << std::endl;
+					continue;
+				}
 				// Check if parent dock had been created.
-				if (dock_name_to_id.count(parent_dock)) {
+				if (dock_name_to_id.count(static_cast<DOCK_TYPE>(parent))) {
 					// Get parent dock id.
-					ImGuiID parent_id = dock_name_to_id[parent_dock];
+					Dock parent_dock = dock_name_to_id[static_cast<DOCK_TYPE>(parent)];
 					// Create tab dock in parent dock.
-					ImGui::DockBuilderDockWindow(dock_name.c_str(), parent_id);
+					dock.id = parent_dock.id;
+					ImGui::DockBuilderDockWindow(dock.name.c_str(), parent_dock.id);
 					// Add to map.
-					dock_name_to_id[dock_name] = parent_id;
+					dock_name_to_id[static_cast<DOCK_TYPE>(dock_type)] = dock;
 				}
 				else {
-					std::cerr << "ERROR: Parent dock not found. Unable to build " << dock_name << " dock." << std::endl;
+					std::cerr << "ERROR: Parent dock not found. Unable to build " << dock.name << " dock." << std::endl;
 				}
 				break;
 			default:
@@ -233,7 +248,7 @@ namespace MPL {
 		}
 
 		for (auto& dock : layouts[curr_layout]) {
-			ImGui::Begin(dock.first.c_str());
+			ImGui::Begin(dock.second.name.c_str());
 			ImGui::End();
 		}
 	}

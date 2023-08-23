@@ -1,6 +1,13 @@
-main
-d Inspector 1 0.2		// dock format: Dock name | Direction of split: 0: UP, 1: RIGHT, 2: DOWN, 3: LEFT, 4: NONE | Size ratio for node at direction
-d Project 3 0.3
-d Hierarchy 0 0.2		
-d Scene -1 0
-t Game Scene
+main				// name of layout
+d Inspector 0 1 0.2		// dock format: Dock name | Dock type | Direction of split: 0: LEFT, 1: RIGHT, 2: UP, 3: DOWN, -1: NONE | Size ratio for node at direction
+d Project 1 3 0.3
+d Hierarchy 2 0 0.2		
+d Scene 3 -1 0
+t Game 4 3			// tab format: Dock name | Dock type | Parent dock id
+
+// Dock type:
+INSPECTOR = 0
+PROJECT
+HIERARCHY
+SCENE
+GAME

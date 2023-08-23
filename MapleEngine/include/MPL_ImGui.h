@@ -1,6 +1,20 @@
 #pragma once
 namespace MPL {
 	class MPL_ImGui {
+
+		enum DOCK_TYPE {
+			INSPECTOR = 0,
+			PROJECT,
+			HIERARCHY,
+			SCENE,
+			GAME
+		};
+
+		struct Dock {
+			std::string name;
+			ImGuiID id;
+		};
+
 	public:
 		static MPL_ImGui& Ref() {
 			static MPL_ImGui ref;
@@ -30,7 +44,7 @@ namespace MPL {
 		void Build_Default_Layout(bool const set_active = true, bool const create_file = false);
 
 	public:
-		inline static std::unordered_map<std::string, std::unordered_map<std::string, ImGuiID>> layouts;
+		inline static std::unordered_map<std::string, std::unordered_map<DOCK_TYPE, Dock>> layouts;
 
 	private:
 		static constexpr const char* DOCKSPACE_NAME = "main-dockspace";
