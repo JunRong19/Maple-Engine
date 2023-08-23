@@ -37,7 +37,6 @@ namespace MPL {
 	void MPL_Input::Process_Input() {
 		if (glfwGetKey(Core.Window(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(Core.Window(), true);
-
 	}
 
 	void Keyboard_Callback(GLFWwindow* window, int key, int scancode, int action, int mods) {

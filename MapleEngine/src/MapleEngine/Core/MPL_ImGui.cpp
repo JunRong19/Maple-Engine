@@ -2,6 +2,7 @@
 #include <MPL_ImGui.h>
 #include <MPL_Engine.h>
 #include <MPL_Configs.h>
+#include <MPL_Input.h>
 #include <filesystem>
 
 namespace MPL {
@@ -30,6 +31,12 @@ namespace MPL {
 		// Enable docking.
 		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+		MPL::Input.Subscribe_To_Key('A', TRIGGERED, MPL_ImGui::Switch_Layout);
+	}
+
+	void MPL_ImGui::Switch_Layout() {
+		curr_layout = "backup-layout";
 	}
 
 	void MPL_ImGui::Initialize_Layouts() {
@@ -211,8 +218,8 @@ namespace MPL {
 			std::istringstream ss_line{ line };
 
 			char build_mode;	// Create dock or dock tab.
-			int dock_type;				// Type of dock.
-			int direction;			// 0: LEFT | 1: RIGHT | 2: UP | 3: DOWN
+			int dock_type;			// Type of dock.
+			int direction;			// 0: LEFT | 1: RIGHT | 2: UP | 3: DOWN | -1: DOCKSPACE
 			float size_ratio{};		// Size ratio of dock.
 			int parent;	// Parent dock of dock tab.
 			Dock dock;
@@ -289,41 +296,124 @@ namespace MPL {
 			return;
 		}
 
-		layout_fmt& layout = layouts[curr_layout];
-
 		// Display enabled docks.
-		if (show_inspector) Show_Inspector(layout.at(INSPECTOR));
-		if (show_project) Show_Project(layout.at(PROJECT));
-		if (show_hierarchy) Show_Hierarchy(layout.at(HIERARCHY));
-		if (show_scene) Show_Scene(layout.at(SCENE));
-		if (show_game) Show_Game(layout.at(GAME));
+		if (show_inspector) Show_Inspector();
+		if (show_project) Show_Project();
+		if (show_hierarchy) Show_Hierarchy();
+		if (show_scene) Show_Scene();
+		if (show_game) Show_Game();
+		if (show_lighting) Show_Lighting();
 	}
 
-	void MPL_ImGui::Show_Inspector(Dock const& dock) {
-		ImGui::Begin(dock.name.c_str(), &show_inspector);
+	void MPL_ImGui::Show_Inspector() {
+		layout_fmt& layout = layouts[curr_layout];
+		std::string name;
+
+		if ((layout.count(INSPECTOR))) {
+			name = layout[INSPECTOR].name.c_str();
+		}
+		else {
+			name = INSPECTOR_WINDOW_TITLE;
+			ImGui::SetNextWindowDockID(dockspace_id, ImGuiCond_FirstUseEver);
+		}
+
+		if (ImGui::Begin(name.c_str(), &show_inspector)) {
+
+		}
 		ImGui::End();
 	}
 
-	void MPL_ImGui::Show_Project(Dock const& dock) {
-		ImGui::Begin(dock.name.c_str(), &show_project);
+	void MPL_ImGui::Show_Project() {
+		layout_fmt& layout = layouts[curr_layout];
+		std::string name;
+
+		if ((layout.count(PROJECT))) {
+			name = layout[PROJECT].name.c_str();
+		}
+		else {
+			name = PROJECT_WINDOW_TITLE;
+			ImGui::SetNextWindowDockID(dockspace_id, ImGuiCond_FirstUseEver);
+		}
+
+		if (ImGui::Begin(name.c_str(), &show_project)) {
+
+		}
 		ImGui::End();
 	}
 
-	void MPL_ImGui::Show_Hierarchy(Dock const& dock) {
-		ImGui::Begin(dock.name.c_str(), &show_hierarchy);
+	void MPL_ImGui::Show_Hierarchy() {
+		layout_fmt& layout = layouts[curr_layout];
+		std::string name;
+
+		if ((layout.count(HIERARCHY))) {
+			name = layout[HIERARCHY].name.c_str();
+		}
+		else {
+			name = HIERARCHY_WINDOW_TITLE;
+			ImGui::SetNextWindowDockID(dockspace_id, ImGuiCond_FirstUseEver);
+		}
+
+		if (ImGui::Begin(name.c_str(), &show_hierarchy)) {
+
+		}
 		ImGui::End();
 	}
 
-	void MPL_ImGui::Show_Scene(Dock const& dock) {
-		ImGuiDockNode* node = ImGui::DockBuilderGetNode(dock.id);
-		ImGui::Begin(dock.name.c_str(), &show_scene);
+	void MPL_ImGui::Show_Scene() {
+		layout_fmt& layout = layouts[curr_layout];
+		std::string name;
+
+		if ((layout.count(SCENE))) {
+			name = layout[SCENE].name.c_str();
+		}
+		else {
+			name = SCENE_WINDOW_TITLE;
+			ImGui::SetNextWindowDockID(dockspace_id, ImGuiCond_FirstUseEver);
+		}
+
+		if (ImGui::Begin(name.c_str(), &show_scene)) {
+
+		}
 		ImGui::End();
 	}
 
-	void MPL_ImGui::Show_Game(Dock const& dock) {
-		ImGui::Begin(dock.name.c_str(), &show_game);
+	void MPL_ImGui::Show_Game() {
+		layout_fmt& layout = layouts[curr_layout];
+		std::string name;
+
+		if ((layout.count(GAME))) {
+			name = layout[GAME].name.c_str();
+		}
+		else {
+			name = GAME_WINDOW_TITLE;
+			ImGui::SetNextWindowDockID(dockspace_id, ImGuiCond_FirstUseEver);
+		}
+
+		if (ImGui::Begin(name.c_str(), &show_game)) {
+
+		}
 		ImGui::End();
 	}
+
+	void MPL_ImGui::Show_Lighting() {
+		layout_fmt& layout = layouts[curr_layout];
+		std::string name;
+
+		if ((layout.count(LIGHTING))) {
+			name = layout[LIGHTING].name.c_str();
+		}
+		else {
+			name = LIGHTING_WINDOW_TITLE;
+			ImGui::SetNextWindowDockID(dockspace_id, ImGuiCond_FirstUseEver);
+		}
+
+		if (ImGui::Begin(name.c_str(), &show_lighting)) {
+
+		}
+		ImGui::End();
+	}
+
+
 
 	void MPL_ImGui::Build_Default_Layout(bool const set_active, bool const create_file) {
 
