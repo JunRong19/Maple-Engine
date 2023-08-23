@@ -5,6 +5,13 @@
 #include <filesystem>
 
 namespace MPL {
+	// Disable all docks at the start.
+	bool MPL::MPL_ImGui::show_inspector = true;
+	bool MPL::MPL_ImGui::show_project = true;
+	bool MPL::MPL_ImGui::show_hierarchy = true;
+	bool MPL::MPL_ImGui::show_scene = true;
+	bool MPL::MPL_ImGui::show_game = true;
+
 	MPL_ImGui::MPL_ImGui() {}
 
 	MPL_ImGui::~MPL_ImGui() {
@@ -76,11 +83,23 @@ namespace MPL {
 			dockspace_id = ImGui::GetID(DOCKSPACE_NAME);
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
+
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("Windows"))
+			{
+				if (ImGui::MenuItem("Inspector", "", show_inspector)) { show_inspector = !show_inspector; }
+				if (ImGui::MenuItem("Project", "", show_project)) { show_project = !show_project; }
+				if (ImGui::MenuItem("Hierarchy", "", show_hierarchy)) { show_hierarchy = !show_hierarchy; }
+				if (ImGui::MenuItem("Scene", "", show_scene)) { show_scene = !show_scene; }
+				if (ImGui::MenuItem("Game", "", show_game)) { show_game = !show_game; }
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
 	}
 
 	void MPL_ImGui::Render_Dockspace() {
-		dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
-
 		// We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
 		// because it would be confusing to have two docking targets within each others.
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
@@ -120,7 +139,6 @@ namespace MPL {
 			// Load all layouts in resource folder and set a layout as active.
 			Initialize_Layouts();
 		}
-
 		ImGui::End();
 	}
 
@@ -247,10 +265,40 @@ namespace MPL {
 			return;
 		}
 
-		for (auto& dock : layouts[curr_layout]) {
-			ImGui::Begin(dock.second.name.c_str());
-			ImGui::End();
-		}
+		layout_fmt& layout = layouts[curr_layout];
+
+		// Display enabled docks.
+		if (show_inspector) Show_Inspector(layout.at(INSPECTOR));
+		if (show_project) Show_Project(layout.at(PROJECT));
+		if (show_hierarchy) Show_Hierarchy(layout.at(HIERARCHY));
+		if (show_scene) Show_Scene(layout.at(SCENE));
+		if (show_game) Show_Game(layout.at(GAME));
+	}
+
+	void MPL_ImGui::Show_Inspector(Dock const& dock) {
+		ImGui::Begin(dock.name.c_str(), &show_inspector);
+		ImGui::End();
+	}
+
+	void MPL_ImGui::Show_Project(Dock const& dock) {
+		ImGui::Begin(dock.name.c_str(), &show_project);
+		ImGui::End();
+	}
+
+	void MPL_ImGui::Show_Hierarchy(Dock const& dock) {
+		ImGui::Begin(dock.name.c_str(), &show_hierarchy);
+		ImGui::End();
+	}
+
+	void MPL_ImGui::Show_Scene(Dock const& dock) {
+		ImGuiDockNode* node = ImGui::DockBuilderGetNode(dock.id);
+		ImGui::Begin(dock.name.c_str(), &show_scene);
+		ImGui::End();
+	}
+
+	void MPL_ImGui::Show_Game(Dock const& dock) {
+		ImGui::Begin(dock.name.c_str(), &show_game);
+		ImGui::End();
 	}
 
 	void MPL_ImGui::Build_Default_Layout(bool const set_active, bool const create_file) {

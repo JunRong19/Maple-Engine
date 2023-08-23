@@ -1,7 +1,6 @@
 #pragma once
 namespace MPL {
 	class MPL_ImGui {
-
 		enum DOCK_TYPE {
 			INSPECTOR = 0,
 			PROJECT,
@@ -43,15 +42,22 @@ namespace MPL {
 		bool const Load_Layouts_From_Resource();
 		void Build_Default_Layout(bool const set_active = true, bool const create_file = false);
 
-	public:
-		inline static std::unordered_map<std::string, std::unordered_map<DOCK_TYPE, Dock>> layouts;
+		static void Show_Inspector(Dock const& dock);
+		static void Show_Project(Dock const& dock);
+		static void Show_Hierarchy(Dock const& dock);
+		static void Show_Scene(Dock const& dock);
+		static void Show_Game(Dock const& dock);
 
 	private:
+		using layout_fmt = std::unordered_map<DOCK_TYPE, Dock>;
+
+		ImGuiID dockspace_id;
 		static constexpr const char* DOCKSPACE_NAME = "main-dockspace";
 		inline static ImGuiDockNodeFlags dockspace_flags;
+
 		std::string curr_layout;
 		uint16_t layouts_count;
-		ImGuiID dockspace_id;
+		inline static std::unordered_map<std::string, layout_fmt> layouts;
 
 		static constexpr const char* BACKUP_LAYOUT = "backup-layout";
 		static constexpr const char* BACKUP_LAYOUT_PATH = "res/dock_layouts/backup-layout.txt";
@@ -62,6 +68,12 @@ namespace MPL {
 			"d Hierarchy 0 0.2\n"
 			"d Scene -1 0\n"
 			"t Game Scene\n";
+
+		static bool show_inspector;
+		static bool show_project;
+		static bool show_hierarchy;
+		static bool show_scene;
+		static bool show_game;
 	};
 	static MPL_ImGui& ImGui = MPL_ImGui::Ref();
 }
