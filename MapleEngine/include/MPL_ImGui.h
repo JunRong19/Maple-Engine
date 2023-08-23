@@ -6,7 +6,8 @@ namespace MPL {
 			PROJECT,
 			HIERARCHY,
 			SCENE,
-			GAME
+			GAME,
+			LIGHTING
 		};
 
 		struct Dock {
@@ -69,11 +70,12 @@ namespace MPL {
 			"d Scene -1 0\n"
 			"t Game Scene\n";
 
-		static bool show_inspector;
-		static bool show_project;
-		static bool show_hierarchy;
-		static bool show_scene;
-		static bool show_game;
+		inline static bool show_inspector = false;
+		inline static bool show_project = false;
+		inline static bool show_hierarchy = false;
+		inline static bool show_scene = false;
+		inline static bool show_game = false;
+		inline static bool show_lighting = false;
 	};
 	static MPL_ImGui& ImGui = MPL_ImGui::Ref();
 }

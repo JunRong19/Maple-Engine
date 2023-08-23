@@ -6,11 +6,7 @@
 
 namespace MPL {
 	// Disable all docks at the start.
-	bool MPL::MPL_ImGui::show_inspector = true;
-	bool MPL::MPL_ImGui::show_project = true;
-	bool MPL::MPL_ImGui::show_hierarchy = true;
-	bool MPL::MPL_ImGui::show_scene = true;
-	bool MPL::MPL_ImGui::show_game = true;
+
 
 	MPL_ImGui::MPL_ImGui() {}
 
@@ -64,6 +60,21 @@ namespace MPL {
 			configs.Save(std::make_pair("LAYOUT", BACKUP_LAYOUT));
 			std::cerr << "ERROR: No layout found in res folder. Using default layout." << std::endl;
 		}
+
+		// Show windows that are part of current layout.
+		layout_fmt& layout = layouts[curr_layout];
+		for (auto const& dock : layout) {
+			switch (dock.first)
+			{
+			case INSPECTOR: show_inspector = true; break;
+			case PROJECT: show_project = true; break;
+			case HIERARCHY: show_hierarchy = true; break;
+			case SCENE: show_scene = true; break;
+			case GAME: show_game = true; break;
+			case LIGHTING: show_lighting = true; break;
+			default: break;
+			}
+		}
 	}
 
 	void MPL_ImGui::Draw() {
@@ -83,6 +94,17 @@ namespace MPL {
 			dockspace_id = ImGui::GetID(DOCKSPACE_NAME);
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("Options")) {
+				if (ImGui::MenuItem("Lock Windows", "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoResize; }
+
+				if (ImGui::MenuItem("Show Background", "", (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) != 0, true)) { dockspace_flags ^= ImGuiDockNodeFlags_PassthruCentralNode; }
+
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
 
 		if (ImGui::BeginMenuBar())
 		{
@@ -93,6 +115,8 @@ namespace MPL {
 				if (ImGui::MenuItem("Hierarchy", "", show_hierarchy)) { show_hierarchy = !show_hierarchy; }
 				if (ImGui::MenuItem("Scene", "", show_scene)) { show_scene = !show_scene; }
 				if (ImGui::MenuItem("Game", "", show_game)) { show_game = !show_game; }
+				if (ImGui::MenuItem("Lighting", "", show_lighting)) { show_lighting = !show_lighting; }
+
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenuBar();
