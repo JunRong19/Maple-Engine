@@ -3,7 +3,7 @@ d Inspector 0   1  0.2		// dock format: Dock name | Dock type | Direction of spl
 d Project   1   3  0.3
 d Hierarchy 2   0  0.2		
 d Scene     3  -1  0
-t Game      4   3		// tab format: Dock name | Dock type | Parent dock id
+t Game      4   Scene		// tab format: Dock name | Dock type | Parent dock id
 
 // Dock type:
 INSPECTOR 	= 0

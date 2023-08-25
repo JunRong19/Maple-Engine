@@ -11,8 +11,27 @@ namespace MPL {
 		};
 
 		struct Dock {
-			std::string name;
 			ImGuiID id;
+
+			std::string name;
+			char type;
+			int window_type;
+			ImGuiDir direction;
+			float size_ratio;
+
+			std::string parent_dock;
+		};
+		using layout_fmt = std::vector<Dock>;
+
+		struct Layout {
+			layout_fmt docks;
+
+			bool has_inspector;
+			bool has_project;
+			bool has_hierarchy;
+			bool has_scene;
+			bool has_game;
+			bool has_lighting;
 		};
 
 	public:
@@ -51,9 +70,9 @@ namespace MPL {
 		static void Show_Lighting();
 
 		static void Switch_Layout();
-
+		static void Set_Layout();
+		static void Update_Dock_Visiblity();
 	private:
-		using layout_fmt = std::unordered_map<DOCK_TYPE, Dock>;
 
 		inline static ImGuiID dockspace_id;
 		static constexpr const char* DOCKSPACE_NAME = "main-dockspace";
@@ -61,7 +80,7 @@ namespace MPL {
 
 		uint16_t layouts_count;
 		inline static std::string curr_layout;
-		inline static std::unordered_map<std::string, layout_fmt> layouts;
+		inline static std::unordered_map<std::string, Layout> layouts;
 
 		static constexpr const char* BACKUP_LAYOUT = "backup-layout";
 		static constexpr const char* BACKUP_LAYOUT_PATH = "res/dock_layouts/backup-layout.txt";
@@ -71,7 +90,7 @@ namespace MPL {
 			"d Project 1 3 0.3\n"
 			"d Hierarchy 2 0 0.2\n"
 			"d Scene 3 -1 0\n"
-			"t Game 4 3\n";
+			"t Game 4 Scene\n";
 
 		static constexpr const char* INSPECTOR_WINDOW_TITLE = "Inspector";
 		static constexpr const char* PROJECT_WINDOW_TITLE = "Project";
