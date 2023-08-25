@@ -26,7 +26,7 @@ namespace MPL {
 		ImGui_ImplOpenGL3_Init("#version 450");
 
 		// Set ImGui window theme.
-		ImGui::StyleColorsLight();
+		Set_Theme(static_cast<THEME>(std::stoi(MPL_Configs::Get_Data().at("THEME"))));
 
 		// Enable docking.
 		ImGuiIO& io = ImGui::GetIO();
@@ -62,7 +62,7 @@ namespace MPL {
 			std::cerr << "ERROR: No layout found in res folder. Using back-up layout." << std::endl;
 		}
 
-		Set_Layout();
+		Set_Layout(curr_layout);
 
 		// Show windows that are part of current layout.
 		Update_Dock_Visiblity();
@@ -121,7 +121,6 @@ namespace MPL {
 				for (auto const& layout : layouts) {
 					if (ImGui::Selectable(layout.first.c_str(), layout.first == curr_layout)) {
 						// Update layout.
-						curr_layout = layout.first.c_str();
 
 						// Reset dockspace. Unparent all child windows.
 						ImGui::DockBuilderRemoveNode(dockspace_id);
@@ -129,12 +128,10 @@ namespace MPL {
 						ImGui::DockBuilderSetNodeSize(dockspace_id, ImGui::GetMainViewport()->Size);
 
 						// Set new layout on dockspace.
-						Set_Layout();
+						Set_Layout(layout.first.c_str());
 						// Only show docks that are part of the new layout.
 						Update_Dock_Visiblity();
-
 						break;
-
 					}
 				}
 				ImGui::EndListBox();
@@ -143,6 +140,34 @@ namespace MPL {
 			}
 			ImGui::EndMenuBar();
 		}
+
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("Themes"))
+			{
+				ImGui::BeginListBox(" ");
+				if (ImGui::Selectable("Classic", curr_theme == CLASSIC)) { Set_Theme(CLASSIC); }
+				if (ImGui::Selectable("Light", curr_theme == LIGHT)) { Set_Theme(LIGHT); }
+				if (ImGui::Selectable("Dark", curr_theme == DARK)) { Set_Theme(DARK); }
+
+				ImGui::EndListBox();
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+	}
+
+	void MPL_ImGui::Set_Theme(THEME const& theme) {
+		curr_theme = theme;
+
+		switch (theme) {
+		case CLASSIC: ImGui::StyleColorsClassic(); break;
+		case LIGHT: ImGui::StyleColorsLight(); break;
+		case DARK: ImGui::StyleColorsDark(); break;
+		}
+
+		MPL_Configs configs;
+		configs.Save(std::make_pair("THEME", std::to_string(theme)));
 	}
 
 	void MPL_ImGui::Update_Dock_Visiblity() {
@@ -222,7 +247,8 @@ namespace MPL {
 		return (layouts_count > 0) ? true : false;
 	}
 
-	void MPL_ImGui::Set_Layout() {
+	void MPL_ImGui::Set_Layout(std::string new_layout) {
+		curr_layout = new_layout;
 		Layout layout = layouts[curr_layout];
 
 		std::unordered_map<std::string, ImGuiID> cache;
@@ -260,6 +286,9 @@ namespace MPL {
 			}
 		}
 		ImGui::DockBuilderFinish(dockspace_id);
+
+		MPL_Configs configs;
+		configs.Save(std::make_pair("LAYOUT", curr_layout));
 	}
 
 	void MPL_ImGui::Load_Layout(std::string file_path) {
@@ -361,7 +390,7 @@ namespace MPL {
 		//}
 
 		// Start inspector dock.
-		if (ImGui::Begin("Inspector", &show_inspector)) {
+		if (ImGui::Begin(INSPECTOR_WINDOW_TITLE, &show_inspector)) {
 
 		}
 		ImGui::End();

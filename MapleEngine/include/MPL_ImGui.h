@@ -10,6 +10,12 @@ namespace MPL {
 			LIGHTING
 		};
 
+		enum THEME {
+			CLASSIC,
+			DARK,
+			LIGHT
+		};
+
 		struct Dock {
 			ImGuiID id;
 
@@ -19,7 +25,7 @@ namespace MPL {
 			ImGuiDir direction;
 			float size_ratio;
 
-			std::string parent_dock;
+			std::string parent_dock;	// For tab docks.
 		};
 		using layout_fmt = std::vector<Dock>;
 
@@ -70,8 +76,10 @@ namespace MPL {
 		static void Show_Lighting();
 
 		static void Switch_Layout();
-		static void Set_Layout();
+		static void Set_Layout(std::string new_layout);
 		static void Update_Dock_Visiblity();
+
+		static void Set_Theme(THEME const& theme);
 	private:
 
 		inline static ImGuiID dockspace_id;
@@ -105,6 +113,8 @@ namespace MPL {
 		inline static bool show_scene = false;
 		inline static bool show_game = false;
 		inline static bool show_lighting = false;
+
+		inline static THEME curr_theme = LIGHT;
 	};
 	static MPL_ImGui& ImGui = MPL_ImGui::Ref();
 }

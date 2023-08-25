@@ -80,6 +80,7 @@ configs_fmt MPL_Configs::Default_Configs() {
 	new_configs["WINDOW_WIDTH"] = "1920";
 	new_configs["WINDOW_HEIGHT"] = "1080";
 	new_configs["LAYOUT"] = "main";
+	new_configs["THEME"] = "1";
 
 	return new_configs;
 }
