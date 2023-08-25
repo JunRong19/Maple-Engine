@@ -63,9 +63,6 @@ namespace MPL {
 		}
 
 		Set_Layout(curr_layout);
-
-		// Show windows that are part of current layout.
-		Update_Dock_Visiblity();
 	}
 
 	void MPL_ImGui::Draw() {
@@ -118,17 +115,15 @@ namespace MPL {
 			if (ImGui::BeginMenu("Layouts"))
 			{
 				ImGui::BeginListBox(" ");
+
+				if (ImGui::Selectable("Reset Layout")) { Set_Layout(curr_layout); }
+				ImGui::Separator();
+
 				for (auto const& layout : layouts) {
 					if (ImGui::Selectable(layout.first.c_str(), layout.first == curr_layout)) {
-						// Reset dockspace. Unparent all child windows.
-						ImGui::DockBuilderRemoveNode(dockspace_id);
-						ImGui::DockBuilderAddNode(dockspace_id, dockspace_flags | ImGuiDockNodeFlags_DockSpace);
-						ImGui::DockBuilderSetNodeSize(dockspace_id, ImGui::GetMainViewport()->Size);
-
 						// Set new layout on dockspace.
 						Set_Layout(layout.first.c_str());
-						// Only show docks that are part of the new layout.
-						Update_Dock_Visiblity();
+
 						break;
 					}
 				}
@@ -211,12 +206,6 @@ namespace MPL {
 		if (first_time)
 		{
 			first_time = false;
-			// Configure dockspace.
-			ImGui::DockBuilderRemoveNode(dockspace_id); // Clear any previous layout
-			ImGui::DockBuilderAddNode(dockspace_id, dockspace_flags | ImGuiDockNodeFlags_DockSpace);
-			ImGui::DockBuilderSetNodeSize(dockspace_id, ImGui::GetMainViewport()->Size);
-			ImGui::DockBuilderFinish(dockspace_id);
-
 			// Load all layouts in resource folder and set a layout as active.
 			Initialize_Layouts();
 		}
@@ -246,6 +235,12 @@ namespace MPL {
 	}
 
 	void MPL_ImGui::Set_Layout(std::string new_layout) {
+
+		// Reset dockspace. Unparent all child windows.
+		ImGui::DockBuilderRemoveNode(dockspace_id);
+		ImGui::DockBuilderAddNode(dockspace_id, dockspace_flags | ImGuiDockNodeFlags_DockSpace);
+		ImGui::DockBuilderSetNodeSize(dockspace_id, ImGui::GetMainViewport()->Size);
+
 		curr_layout = new_layout;
 		Layout layout = layouts[curr_layout];
 
@@ -284,6 +279,8 @@ namespace MPL {
 			}
 		}
 		ImGui::DockBuilderFinish(dockspace_id);
+		// Update flags to only show docks that are part of the layout.
+		Update_Dock_Visiblity();
 
 		MPL_Configs configs;
 		configs.Save(std::make_pair("LAYOUT", curr_layout));
