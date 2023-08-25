@@ -57,9 +57,9 @@ void MPL_Configs::Load() {
 	config_file.close();
 }
 
-configs_fmt MPL_Configs::Create_Default_Configs_File() {
+Configs MPL_Configs::Create_Default_Configs_File() {
 	// Get default configs.
-	configs_fmt default_configs = Default_Configs();
+	Configs default_configs = Default_Configs();
 
 	const char* path = "res/dock_layouts/backup-layout.txt";
 	std::ofstream ofile{ "configs.txt" };
@@ -75,8 +75,8 @@ configs_fmt MPL_Configs::Create_Default_Configs_File() {
 	return default_configs;
 }
 
-configs_fmt MPL_Configs::Default_Configs() {
-	configs_fmt new_configs;
+Configs MPL_Configs::Default_Configs() {
+	Configs new_configs;
 	new_configs["WINDOW_WIDTH"] = "1920";
 	new_configs["WINDOW_HEIGHT"] = "1080";
 	new_configs["LAYOUT"] = "main";

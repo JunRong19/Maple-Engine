@@ -120,8 +120,6 @@ namespace MPL {
 				ImGui::BeginListBox(" ");
 				for (auto const& layout : layouts) {
 					if (ImGui::Selectable(layout.first.c_str(), layout.first == curr_layout)) {
-						// Update layout.
-
 						// Reset dockspace. Unparent all child windows.
 						ImGui::DockBuilderRemoveNode(dockspace_id);
 						ImGui::DockBuilderAddNode(dockspace_id, dockspace_flags | ImGuiDockNodeFlags_DockSpace);
@@ -299,7 +297,7 @@ namespace MPL {
 
 		std::string layout_name;	// Name of this layout.
 		std::string line;			// Line buffer when reading file contents.
-		layout_fmt dock_name_to_id;	// Store docks and their IDs.
+		Docks dock_name_to_id;	// Store docks and their IDs.
 
 		// Get name of layout.
 		getline(file, line);
@@ -374,7 +372,7 @@ namespace MPL {
 	}
 
 	void MPL_ImGui::Show_Inspector() {
-		layout_fmt& layout = layouts[curr_layout].docks;
+		Docks& layout = layouts[curr_layout].docks;
 		std::string name;
 
 		// Check if inspector dock is part of current layout...
@@ -397,7 +395,7 @@ namespace MPL {
 	}
 
 	void MPL_ImGui::Show_Project() {
-		layout_fmt& layout = layouts[curr_layout].docks;
+		Docks& layout = layouts[curr_layout].docks;
 		std::string name;
 
 		//// Check if project dock is part of current layout...
@@ -420,7 +418,7 @@ namespace MPL {
 	}
 
 	void MPL_ImGui::Show_Hierarchy() {
-		layout_fmt& layout = layouts[curr_layout].docks;
+		Docks& layout = layouts[curr_layout].docks;
 		std::string name;
 
 		//// Check if hierarchy dock is part of current layout...
@@ -443,7 +441,7 @@ namespace MPL {
 	}
 
 	void MPL_ImGui::Show_Scene() {
-		layout_fmt& layout = layouts[curr_layout].docks;
+		Docks& layout = layouts[curr_layout].docks;
 		std::string name;
 
 		//// Check if scene dock is part of current layout...
@@ -466,7 +464,7 @@ namespace MPL {
 	}
 
 	void MPL_ImGui::Show_Game() {
-		layout_fmt& layout = layouts[curr_layout].docks;
+		Docks& layout = layouts[curr_layout].docks;
 		std::string name;
 
 		//// Check if game dock is part of current layout...
@@ -489,7 +487,7 @@ namespace MPL {
 	}
 
 	void MPL_ImGui::Show_Lighting() {
-		layout_fmt& layout = layouts[curr_layout].docks;
+		Docks& layout = layouts[curr_layout].docks;
 		std::string name;
 
 		//// Check if lighting dock is part of current layout...

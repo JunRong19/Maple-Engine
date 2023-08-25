@@ -27,10 +27,10 @@ namespace MPL {
 
 			std::string parent_dock;	// For tab docks.
 		};
-		using layout_fmt = std::vector<Dock>;
 
+		using Docks = std::vector<Dock>;
 		struct Layout {
-			layout_fmt docks;
+			Docks docks;
 
 			bool has_inspector;
 			bool has_project;
