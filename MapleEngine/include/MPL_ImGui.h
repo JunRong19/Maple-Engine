@@ -7,7 +7,8 @@ namespace MPL {
 			HIERARCHY,
 			SCENE,
 			GAME,
-			LIGHTING
+			LIGHTING,
+			NONE
 		};
 
 		enum THEME {
@@ -17,21 +18,21 @@ namespace MPL {
 		};
 
 		struct Dock {
-			ImGuiID id;
+			char build_type;	// Initial build mode: Dock / tab.
+			DOCK_TYPE type;		// What type of dock this is?
+			ImGuiDir direction;	// Build direction.
+			float size_ratio;	// Build size ratio.
 
-			std::string name;
-			char type;
-			int window_type;
-			ImGuiDir direction;
-			float size_ratio;
-
-			std::string parent_dock;	// For tab docks.
+			DOCK_TYPE parent_dock;	// For tab docks.
 		};
 
 		using Docks = std::vector<Dock>;
+
 		struct Layout {
+			// Contains all docks in this layout.
 			Docks docks;
 
+			// Dock flags.
 			bool has_inspector;
 			bool has_project;
 			bool has_hierarchy;
@@ -64,9 +65,10 @@ namespace MPL {
 		void Render_Engine_Layout();
 
 		void Initialize_Layouts();
-		void Load_Layout(std::string file_path);
-		bool const Load_Layouts_From_Resource();
 		void Build_Default_Layout(bool const set_active = true, bool const create_file = false);
+
+		void Load_Layout(std::string const& file_path);
+		bool const Load_Layouts_From_Resource();
 
 		static void Show_Inspector();
 		static void Show_Project();
@@ -76,10 +78,13 @@ namespace MPL {
 		static void Show_Lighting();
 
 		static void Switch_Layout();
-		static void Set_Layout(std::string new_layout);
+		static void Set_Layout(std::string const& new_layout);
 		static void Update_Dock_Visiblity();
 
-		static void Set_Theme(THEME const& theme);
+		static void Set_Theme(THEME const theme);
+
+		static DOCK_TYPE Dock_Id_To_Type(int const id);
+		static std::string Dock_Type_To_Name(DOCK_TYPE const type);
 	private:
 
 		inline static ImGuiID dockspace_id;
@@ -94,11 +99,11 @@ namespace MPL {
 		static constexpr const char* BACKUP_LAYOUT_PATH = "res/dock_layouts/backup-layout.txt";
 		static constexpr const char* BACKUP_LAYOUT_FILE_CONTENT
 			= "backup-layout\n"
-			"d Inspector 0 1 0.2\n"
-			"d Project 1 3 0.3\n"
-			"d Hierarchy 2 0 0.2\n"
-			"d Scene 3 -1 0\n"
-			"t Game 4 Scene\n";
+			"d	0	1	0.2\n"
+			"d	1	3	0.3\n"
+			"d	2	0	0.2\n"
+			"d	3  -1	0  \n"
+			"t	4	3	   \n";
 
 		static constexpr const char* INSPECTOR_WINDOW_TITLE = "Inspector";
 		static constexpr const char* PROJECT_WINDOW_TITLE = "Project";
