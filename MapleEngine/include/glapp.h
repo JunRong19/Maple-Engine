@@ -14,12 +14,14 @@ struct GLApp {
 		GLSLShader shdr_pgm; // Which shader program?
 		GLuint vaoid; // Handle to VAO
 		GLuint idx_elem_cnt;
+		GLuint fboId;
+		GLuint textureId;
 
 		void Setup_Vao();
 		void Setup_Shdrpgm();
 		void Draw();
+		GLuint GetTextureId() { return textureId; }
 	};
-
 	static GLModel mdl;
 };
 

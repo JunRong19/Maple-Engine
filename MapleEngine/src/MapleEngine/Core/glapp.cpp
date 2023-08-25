@@ -16,8 +16,8 @@ GLApp::GLModel GLApp::mdl;
 void GLApp::GLModel::Setup_Vao() {
 	// Define vertex position and color attributes
 	std::array<glm::vec2, 4> pos_vert{
-		glm::vec2(1.f, -1.f), glm::vec2(1.f, 1.f),
-		glm::vec2(-1.f, 1.f), glm::vec2(-1.f, -1.f)
+		glm::vec2(0.5f, -0.5f), glm::vec2(0.5f, 0.5f),
+		glm::vec2(-0.5f, 0.5f), glm::vec2(-0.5f, -0.5f)
 	};
 	std::array<glm::vec3, 4> color_vert{
 	glm::vec3(1.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f),
@@ -80,6 +80,47 @@ void GLApp::GLModel::Setup_Vao() {
 
 	// Break link to avoid changes to vao's binding.
 	glBindVertexArray(0);
+
+	// create a texture object
+	glGenTextures(1, &textureId);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); // automatic mipmap
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, MPL::Core.Get_Window_Width(), MPL::Core.Get_Window_Height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	// create a renderbuffer object to store depth info
+	GLuint rboId;
+	glGenRenderbuffers(1, &rboId);
+	glBindRenderbuffer(GL_RENDERBUFFER, rboId);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, MPL::Core.Get_Window_Width(), MPL::Core.Get_Window_Height());
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+	// create a framebuffer object
+	glGenFramebuffers(1, &fboId);
+	glBindFramebuffer(GL_FRAMEBUFFER, fboId);
+
+	// attach the texture to FBO color attachment point
+	glFramebufferTexture2D(GL_FRAMEBUFFER,        // 1. fbo target: GL_FRAMEBUFFER
+		GL_COLOR_ATTACHMENT0,  // 2. attachment point
+		GL_TEXTURE_2D,         // 3. tex target: GL_TEXTURE_2D
+		textureId,             // 4. tex ID
+		0);                    // 5. mipmap level: 0(base)
+
+	// attach the renderbuffer to depth attachment point
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER,      // 1. fbo target: GL_FRAMEBUFFER
+		GL_DEPTH_ATTACHMENT, // 2. attachment point
+		GL_RENDERBUFFER,     // 3. rbo target: GL_RENDERBUFFER
+		rboId);              // 4. rbo ID
+
+	// check FBO status
+	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+
+	// switch back to window-system-provided framebuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void GLApp::GLModel::Setup_Shdrpgm() {
@@ -101,21 +142,34 @@ void GLApp::GLModel::Setup_Shdrpgm() {
 }
 
 void GLApp::GLModel::Draw() {
-	// there are many shader programs initialized - here we're saying
-	// which specific shader program should be used to render geometry
+	glBindFramebuffer(GL_FRAMEBUFFER, fboId);
+
+	if (ImGui::FindWindowByName("Scene") != nullptr) {
+		float x = ImGui::FindWindowByName("Scene")->Viewport->Size.x;
+		float y = ImGui::FindWindowByName("Scene")->Viewport->Size.y;
+		glViewport(0, 0, x, y);
+	}
+
+
+
+	// clear buffers
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	shdr_pgm.Use();
-	// there are many models, each with their own initialized VAO object
-	// here, we're saying which VAO's state should be used to set up pipe
+
 	glBindVertexArray(vaoid);
-	// here, we're saying what primitive is to be rendered and how many
-	// such primitives exist.
-	// the graphics driver knows where to get the indices because the VAO
-	// containing this state information has been made current ...
+
 	glDrawElements(primitive_type, idx_elem_cnt, GL_UNSIGNED_SHORT, NULL);
-	// after completing the rendering, we tell the driver that VAO
-	// vaoid and current shader program are no longer current
+
 	glBindVertexArray(0);
+
 	shdr_pgm.UnUse();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glBindTexture(GL_TEXTURE_2D, textureId);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 

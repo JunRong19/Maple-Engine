@@ -4,6 +4,7 @@
 #include <MPL_Configs.h>
 #include <MPL_Input.h>
 #include <filesystem>
+#include <glapp.h>
 
 namespace MPL {
 	// Disable all docks at the start.
@@ -66,7 +67,7 @@ namespace MPL {
 
 	void MPL_ImGui::Draw() {
 		Start_ImGui_Render();
-		//ImGui::ShowDemoWindow();
+		ImGui::ShowDemoWindow();
 		Render_Dockspace();
 		Render_Engine_Layout();
 
@@ -438,9 +439,16 @@ namespace MPL {
 		if (!layout.has_scene) {
 			ImGui::SetNextWindowDockID(dockspace_id, ImGuiCond_FirstUseEver);
 		}
-
+		GLApp app;
 		// Start scene dock.
 		if (ImGui::Begin(SCENE_WINDOW_TITLE, &show_scene)) {
+
+			ImGui::GetWindowDrawList()->AddImage(
+				(void*)app.mdl.GetTextureId(), ImGui::GetWindowPos(),
+				ImVec2(ImGui::GetWindowPos().x + ImGui::GetWindowWidth(),
+					ImGui::GetWindowPos().y + ImGui::GetWindowHeight()),
+				ImVec2(0, 1), ImVec2(1, 0));
+
 
 		}
 		ImGui::End();
