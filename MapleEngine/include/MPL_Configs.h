@@ -10,6 +10,9 @@ public:
 	Configs Create_Default_Configs_File();
 	Configs Default_Configs();
 
+	template <typename T>
+	void Deserialize_Configs(std::string key, T value);
+
 	inline bool const Status() { return configs_loaded; }
 	inline static Configs const Get_Data() { return configs; }
 

@@ -1,6 +1,8 @@
 #include <pch.h>
 #include <MPL_Configs.h>
-#include <rapidjson.h>
+#include <rapidjson/document.h>
+#include <rapidjson/error/en.h>
+
 
 void MPL_Configs::Save(std::pair<std::string, std::string> const& new_config) {
 	// Overwrite current config with new config.
@@ -30,6 +32,12 @@ void MPL_Configs::Save(std::vector<std::pair<std::string, std::string>> const& n
 	ofile.close();
 }
 
+template <typename T>
+void Deserialize_Configs(std::string key, T value) {
+
+
+}
+
 void MPL_Configs::Load() {
 	// Try load config files.
 	std::ifstream config_file{ CONFIGS_PATH };
@@ -40,6 +48,17 @@ void MPL_Configs::Load() {
 		configs_loaded = true;
 	}
 	else {
+		rapidjson::Document d;
+		rapidjson::ParseResult ok = d.Parse(CONFIGS_PATH);
+		if (!ok) {
+			std::cerr << "ERROR: Unable to load configs." << std::endl;
+			std::cerr << "JSON parse error: " << rapidjson::GetParseError_En(ok.Code()) << std::endl;
+		}
+
+		for (rapidjson::Value::ConstValueIterator itr = d.Begin(); itr != d.End(); ++itr) {
+
+		}
+
 		// Load configs.
 		std::string line;
 		while (getline(config_file, line)) {
