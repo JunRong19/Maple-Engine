@@ -6,13 +6,13 @@ VAO::VAO() {
 }
 
 void VAO::Link_Attrib(VBO VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset) {
-	VBO.Bind();
+	//VBO.Bind();
 	// Specify the format and VBO (current active) to be used in VAO.
 	// Calling this func will allow VAO to read and store the configuration.
 	glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offset);
 	// Enable vertex attribute so that OpenGL knows to use it.
 	glEnableVertexAttribArray(layout);
-	VBO.Unbind();
+	//VBO.Unbind();
 }
 
 void VAO::Bind() {

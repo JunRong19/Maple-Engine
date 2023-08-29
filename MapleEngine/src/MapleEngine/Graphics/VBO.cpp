@@ -1,19 +1,14 @@
 #include <pch.h>
 #include <VBO.h>
 
-VBO::VBO(GLfloat* vertices, GLsizeiptr size) {
-	glGenBuffers(1, &ID);
-	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+//TODO: 2 VBO 
+
+VBO::VBO(GLsizeiptr size, GLfloat* data) {
+	glCreateBuffers(1, &ID);
+	glNamedBufferStorage(ID, size, data, GL_DYNAMIC_STORAGE_BIT);
 }
 
-void VBO::Bind() {
-	glBindBuffer(GL_ARRAY_BUFFER, ID);
-}
 
-void VBO::Unbind() {
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
 
 void VBO::Delete() {
 	glDeleteBuffers(1, &ID);

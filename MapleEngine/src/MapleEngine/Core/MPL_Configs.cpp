@@ -1,14 +1,15 @@
 #include <pch.h>
 #include <MPL_Configs.h>
+#include <rapidjson.h>
 
 void MPL_Configs::Save(std::pair<std::string, std::string> const& new_config) {
 	// Overwrite current config with new config.
 	configs[new_config.first] = new_config.second;
 
-	std::ofstream ofile{ "configs.txt" };
+	std::ofstream ofile{ CONFIGS_PATH };
 
 	// Save new config to file.
-	for (auto& config : configs) {
+	for (auto const& config : configs) {
 		ofile << config.first << ": " << config.second << std::endl;
 	}
 	ofile.close();
@@ -23,7 +24,7 @@ void MPL_Configs::Save(std::vector<std::pair<std::string, std::string>> const& n
 	std::ofstream ofile{ "configs.txt" };
 
 	// Save new config to file.
-	for (auto& config : configs) {
+	for (auto const& config : configs) {
 		ofile << config.first << ": " << config.second << std::endl;
 	}
 	ofile.close();
@@ -31,7 +32,7 @@ void MPL_Configs::Save(std::vector<std::pair<std::string, std::string>> const& n
 
 void MPL_Configs::Load() {
 	// Try load config files.
-	std::ifstream config_file{ "configs.txt" };
+	std::ifstream config_file{ CONFIGS_PATH };
 	// If config file not found, initialize with default configs.
 	if (!config_file) {
 		std::cout << "Missing config.txt file. Creating new config.txt file" << std::endl;
@@ -61,10 +62,9 @@ Configs MPL_Configs::Create_Default_Configs_File() {
 	// Get default configs.
 	Configs default_configs = Default_Configs();
 
-	const char* path = "res/dock_layouts/backup-layout.txt";
-	std::ofstream ofile{ "configs.txt" };
+	std::ofstream ofile{ CONFIGS_PATH };
 	if (!ofile) {
-		std::cerr << "ERROR: Unable to write to file path: " << path << std::endl;
+		std::cerr << "ERROR: Unable to write to file path: " << CONFIGS_PATH << std::endl;
 	}
 
 	// Create a new config file.
@@ -80,7 +80,7 @@ Configs MPL_Configs::Default_Configs() {
 	new_configs["WINDOW_WIDTH"] = "1920";
 	new_configs["WINDOW_HEIGHT"] = "1080";
 	new_configs["LAYOUT"] = "main";
-	new_configs["THEME"] = "1";
+	new_configs["THEME"] = "2";		// Light theme.
 
 	return new_configs;
 }

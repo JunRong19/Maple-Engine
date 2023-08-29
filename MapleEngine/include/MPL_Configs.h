@@ -16,5 +16,8 @@ public:
 private:
 	inline static Configs configs;
 	bool configs_loaded = false;
+
+	static constexpr const char* CONFIGS_PATH = "configs.txt";
+
 };
 

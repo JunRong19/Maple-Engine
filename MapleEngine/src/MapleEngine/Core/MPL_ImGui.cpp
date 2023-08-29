@@ -67,7 +67,7 @@ namespace MPL {
 
 	void MPL_ImGui::Draw() {
 		Start_ImGui_Render();
-		ImGui::ShowDemoWindow();
+		//ImGui::ShowDemoWindow();
 		Render_Dockspace();
 		Render_Engine_Layout();
 

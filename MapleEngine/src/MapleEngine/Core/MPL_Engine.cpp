@@ -95,7 +95,9 @@ namespace MPL {
 	void MPL_Engine::Set_Window_Title() {
 		// Update title of window.
 		std::stringstream title;
-		title << "MapleEngine | FPS: " << std::fixed << std::setprecision(2) << MPL::Time.Fps();
+		title << "MapleEngine" << " | "
+			<< "FPS: " << std::fixed << std::setprecision(2) << MPL::Time.Fps();
+
 		glfwSetWindowTitle(window, title.str().c_str());
 	}
 
