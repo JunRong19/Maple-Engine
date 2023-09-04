@@ -48,16 +48,16 @@ void MPL_Configs::Load() {
 		configs_loaded = true;
 	}
 	else {
-		rapidjson::Document d;
-		rapidjson::ParseResult ok = d.Parse(CONFIGS_PATH);
-		if (!ok) {
-			std::cerr << "ERROR: Unable to load configs." << std::endl;
-			std::cerr << "JSON parse error: " << rapidjson::GetParseError_En(ok.Code()) << std::endl;
-		}
+		//rapidjson::Document d;
+		//rapidjson::ParseResult ok = d.Parse(CONFIGS_PATH);
+		//if (!ok) {
+		//	std::cerr << "ERROR: Unable to load configs." << std::endl;
+		//	std::cerr << "JSON parse error: " << rapidjson::GetParseError_En(ok.Code()) << std::endl;
+		//}
 
-		for (rapidjson::Value::ConstValueIterator itr = d.Begin(); itr != d.End(); ++itr) {
+		//for (rapidjson::Value::ConstValueIterator itr = d.Begin(); itr != d.End(); ++itr) {
 
-		}
+		//}
 
 		// Load configs.
 		std::string line;
